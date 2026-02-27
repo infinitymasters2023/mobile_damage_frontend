@@ -1,6 +1,7 @@
 "use client";
 import { Sun, Moon } from "lucide-react";
 import Image from "next/image";
+import Logo from "../app/img/infinity-logo-164.png";
 
 interface HeaderProps {
   theme: "dark" | "light";
@@ -13,7 +14,13 @@ export default function Header({ theme, toggleTheme }: HeaderProps) {
       theme === "dark" ? "border-white/5 bg-[#050505]/50" : "border-slate-200 bg-white/70"
     }`}>
       <h1 className="bg-white p-2 rounded-xl">
-        <Image src="https://infinityassurance.com/wp-content/uploads/2022/02/infinity-logo-164.png" alt="logo" width={32} height={32} className="h-8 object-contain" /> 
+        <Image
+        src={Logo}
+        alt="logo"
+        width={150}
+        height={32}
+        className="h-8 object-contain"
+      /> 
       </h1>
 
       <div className="flex items-center gap-4">

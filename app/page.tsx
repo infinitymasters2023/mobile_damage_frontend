@@ -6,6 +6,7 @@ import ImageUploader from "@/components/upload/ImageUploader";
 import ImagePreview from "@/components/upload/ImagePreview";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
+import Logo from "../app/img/infinity-logo-164.png";
 const DAMAGE_TYPES = [
   "Back Crack", "Back Scratch", "Back Dent", "Back Corner Damage", 
   "Camera Damage", "Screen Crack", "Screen Scratch", "Screen Shatter", 
@@ -63,7 +64,13 @@ export default function UploadPage() {
       {/* --- HEADER --- */}
       <header className="min-h-[5rem] border-b border-white/5 bg-[#050505]/50 backdrop-blur-md sticky top-0 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 sm:px-8">
         <h1 className="bg-white p-2 rounded-xl shrink-0 ml-8">
-          <Image src="https://infinityassurance.com/wp-content/uploads/2022/02/infinity-logo-164.png" alt="logo" width={140} height={80} className="h-8 object-contain" /> 
+              <Image
+              src={Logo}
+              alt="logo"
+              width={150}
+              height={32}
+              className="h-8 object-contain"
+            /> 
         </h1>
 
         <div className="flex items-center gap-3">
