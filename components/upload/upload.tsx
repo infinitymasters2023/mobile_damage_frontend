@@ -94,7 +94,7 @@ export default function UploadPage() {
                   Select thumbnails to view deep metadata
                 </div>
               ) : (
-                selectedImages.map((img, idx) => (
+                selectedImages.map((img) => (
                   <div key={img.url} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <DetailCard label="Asset ID" value={img.name} />
                     <DetailCard label="Size Data" value={`${(img.size / 1024).toFixed(1)} KB`} />

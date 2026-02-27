@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useLayoutEffect, useTransition } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -37,7 +37,6 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [mounted, setMounted] = useState(true);
   const [, startTransition] = useTransition();
 
   // Auto-close mobile sidebar on navigation
@@ -46,8 +45,6 @@ export default function Sidebar() {
       setIsMobileOpen(false);
     });
   }, [pathname]);
-
-  if (!mounted) return null;
 
   return (
     <>

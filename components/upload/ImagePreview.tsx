@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { UploadedImage } from "@/app/page";
 
 interface ImagePreviewProps {
@@ -31,10 +32,12 @@ export default function ImagePreview({ files, selectedImages, toggleSelect }: Im
                 : "border border-white/10 bg-white/5 hover:border-white/30 hover:scale-[1.02] shadow-2xl"
               }
             `}>
-              <img 
+              <Image 
                 src={file.url} 
                 className={`object-cover w-full h-full transition-transform duration-700 ${isSelected ? "scale-110" : "group-hover:scale-110"}`} 
-                alt={file.name} 
+                alt={file.name}
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
               />
               
               {/* Overlay Gradient - Dark Optimized */}
