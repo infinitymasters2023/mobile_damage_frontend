@@ -122,7 +122,7 @@ export default function UploadPage() {
     </div>
   );
 }
-
+{/* --- COMPONENTS --- */}
 function DetailCard({ image }: { image: UploadedImage }) {
   const isAnalyzing = image.status === "analyzing";
 

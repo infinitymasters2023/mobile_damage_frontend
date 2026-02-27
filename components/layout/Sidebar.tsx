@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -13,8 +13,8 @@ const navItems = [
   { icon: <LayoutDashboard size={20} />, label: "Overview", href: "/" },
   { icon: <CreditCard size={20} />, label: "Ocr to Cheque", href: "/diagnostics" },
   { icon: <BookOpen size={20} />, label: "Ocr to Passbook", href: "/Ocr_Passbook" },
-  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Ocr_Barcode read" },
-  { icon: <Receipt size={20} />, label: "Payment Proof", href: "/Ocr_Payment Proof"},
+  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Ocr_Barcode_read" },
+  { icon: <Receipt size={20} />, label: "Payment Proof", href: "/Ocr_Payment_Proof"},
   { icon: <Contact2 size={20} />, label: "Ocr Bank ID", href: "/Ocr_Bank-ID"},
   { icon: <Cpu size={20} />, label: "Ocr IMEI", href: "/Ocr_Imei"},
   { icon: <ShoppingBag size={20} />, label: "Ocr Purchase Device", href: "/Ocr_Purchase_Device"},
@@ -25,22 +25,37 @@ const navItems = [
   { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate"},
 ];
 
+interface SidebarLinkProps {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  active: boolean;
+  isCollapsed: boolean;
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(true);
+  const [, startTransition] = useTransition();
 
   // Auto-close mobile sidebar on navigation
   useEffect(() => {
-    setIsMobileOpen(false);
+    startTransition(() => {
+      setIsMobileOpen(false);
+    });
   }, [pathname]);
+
+  if (!mounted) return null;
 
   return (
     <>
       {/* --- MOBILE TRIGGER --- */}
       <button 
         onClick={() => setIsMobileOpen(true)}
-        className="fixed top-4 left-4 z-[60] lg:hidden p-3 rounded-2xl border shadow-xl transition-all bg-[#050505] border-white/10 text-white"
+        aria-label="Open Menu"
+        className="fixed top-4 left-4 z-[60] lg:hidden p-3 rounded-2xl border shadow-2xl transition-all bg-[#050505] border-white/10 text-white active:scale-90"
       >
         <Menu size={20} />
       </button>
@@ -48,7 +63,7 @@ export default function Sidebar() {
       {/* --- MOBILE OVERLAY --- */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -63,21 +78,22 @@ export default function Sidebar() {
         {/* Header/Toggle Section */}
         <div className="flex items-center justify-between px-4 mb-8">
           {!isCollapsed && (
-             <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 select-none">
                Navigation
              </span>
           )}
           
           <button 
             onClick={() => isMobileOpen ? setIsMobileOpen(false) : setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-xl border transition-all bg-white/5 border-white/10 text-slate-400 hover:text-white"
+            className="p-2 rounded-xl border transition-all bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
           >
             {isMobileOpen ? <X size={18} /> : isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
         </div>
 
         {/* Links Section */}
-        <nav className="space-y-1.5 flex-grow overflow-y-auto custom-scrollbar px-3">
+        <nav className="space-y-1.5 flex-grow overflow-y-auto px-3 
+          scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
           {navItems.map((item) => (
             <SidebarLink 
               key={item.href}
@@ -87,19 +103,31 @@ export default function Sidebar() {
             />
           ))}
         </nav>
+
+        {/* Optional: System Status at bottom */}
+        {!isCollapsed && (
+          <div className="px-6 mt-4">
+            <div className="p-3 rounded-2xl bg-white/5 border border-white/5">
+               <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Engine Online</span>
+               </div>
+            </div>
+          </div>
+        )}
       </aside>
     </>
   );
 }
 
-function SidebarLink({ icon, label, href, active, isCollapsed }: any) {
+function SidebarLink({ icon, label, href, active, isCollapsed }: SidebarLinkProps) {
   return (
     <Link 
       href={href}
       className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative
         ${active 
-          ? "bg-blue-600/10 text-blue-500 shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]" 
-          : "text-slate-500 hover:text-white hover:bg-white/5" 
+          ? "bg-blue-600/10 text-blue-500 shadow-[inset_0_0_20px_rgba(37,99,235,0.05)] border border-blue-500/10" 
+          : "text-slate-500 hover:text-white hover:bg-white/5 border border-transparent" 
         } ${isCollapsed ? "lg:justify-center lg:px-0" : "w-full"}`}
     >
       <span className={`shrink-0 transition-colors ${active ? "text-blue-500" : "group-hover:text-blue-400"}`}>
@@ -107,13 +135,13 @@ function SidebarLink({ icon, label, href, active, isCollapsed }: any) {
       </span>
       
       <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300
-        ${isCollapsed ? "lg:hidden" : "block"}
+        ${isCollapsed ? "lg:hidden opacity-0" : "block opacity-100"}
       `}>
         {label}
       </span>
 
       {active && (
-        <div className={`absolute right-2 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6] 
+        <div className={`absolute right-2 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_12px_#3b82f6] 
           ${isCollapsed ? "lg:hidden" : "block"}`} 
         />
       )}
