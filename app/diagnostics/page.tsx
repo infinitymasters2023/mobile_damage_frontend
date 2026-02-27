@@ -63,7 +63,7 @@ export default function UploadPage() {
 
       {/* --- HEADER --- */}
       <header className="min-h-[5rem] border-b border-white/5 bg-[#050505]/50 backdrop-blur-md sticky top-0 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 sm:px-8">
-        <h1 className="bg-white p-2 rounded-xl shrink-0 ml-8">
+        <h1 className="bg-white p-2 rounded-xl shrink-0  sm:ml-6 md:ml-10 lg:ml-5">
           <img 
             src="https://infinityassurance.com/wp-content/uploads/2022/02/infinity-logo-164.png" 
             alt="logo" 
@@ -73,7 +73,7 @@ export default function UploadPage() {
 
         <div className="flex items-center gap-3">
           <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20 animate-pulse">
-            Mobile Damage 
+            OCR to Cheque 
           </div>
         </div>
       </header>
