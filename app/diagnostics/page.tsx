@@ -6,7 +6,7 @@ import ImageUploader from "@/components/upload/ImageUploader";
 import ImagePreview from "@/components/upload/ImagePreview";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
-import Logo from "@/app/img/infinity-logo-164.png";
+import Logo from "@/app/img/infinity-logo-164.png";            
 
 const DAMAGE_TYPES = [
   "Back Crack", "Back Scratch", "Back Dent", "Back Corner Damage", 

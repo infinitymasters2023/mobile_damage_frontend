@@ -9,12 +9,10 @@ export default function Footer() {
       bg-white border-slate-200 
       /* Dark Mode Styles */
       dark:bg-[#050505] dark:border-white/10">
-      
       <div className="flex flex-col sm:flex-row justify-between w-full max-w-[1600px] mx-auto items-center gap-4">
         <p className="text-sm transition-colors duration-500 text-slate-500 dark:text-gray-400">
           &copy; 2026 <span className="font-semibold text-blue-600 dark:text-white">Infinity Assurance</span>. All rights reserved.
         </p>
-
         <div className="flex gap-6 items-center">
           <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
             AI Diagnostic Engine v2.0

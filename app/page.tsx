@@ -133,7 +133,7 @@ function DetailCard({ image }: { image: UploadedImage }) {
     <div className="bg-white/5 border border-white/10 px-4 py-4 rounded-3xl transition-all hover:bg-white/[0.08] hover:border-white/20">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-3">
         <div>
-          <p className="text-[10px] font-black uppercase mb-1 text-blue-400 break-all">{image.name}</p>
+          <p className="text-[9px] font-black uppercase mb-1 text-blue-400 break-all">{image.name}</p>
           <p className="text-[9px] text-slate-500">{(image.size / 1024).toFixed(1)} KB</p>
         </div>
         {isAnalyzing ? (
