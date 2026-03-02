@@ -18,9 +18,7 @@ const navItems = [
   { icon: <Contact2 size={20} />, label: "Ocr Bank ID", href: "/Ocr_Bank-ID"},
   { icon: <Cpu size={20} />, label: "Ocr IMEI", href: "/Ocr_Imei"},
   { icon: <ShoppingBag size={20} />, label: "Ocr Purchase Device", href: "/Ocr_Purchase_Device"},
-  { icon: <FileText size={20} />, label: "Invoice Oppo", href: "/Invoice_Oppo"},
-  { icon: <FileText size={20} />, label: "Invoice Samsung", href: "/Invoice_Samsung"},
-  { icon: <FileText size={20} />, label: "Invoice Vivo", href: "/Invoice_Vivo"},
+  { icon: <FileText size={20} />, label: "Invoice", href: "/Invoice_Oppo"},  
   { icon: <UserCheck size={20} />, label: "Ocr Kyc", href: "/Kyc"},
   { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate"},
 ];
@@ -41,9 +39,7 @@ export default function Sidebar() {
 
   // Auto-close mobile sidebar on navigation
   useEffect(() => {
-    startTransition(() => {
-      setIsMobileOpen(false);
-    });
+    setIsMobileOpen(false);
   }, [pathname]);
 
   return (
@@ -51,8 +47,7 @@ export default function Sidebar() {
       {/* --- MOBILE TRIGGER --- */}
       <button 
         onClick={() => setIsMobileOpen(true)}
-        aria-label="Open Menu"
-        className="fixed top-4 left-4 z-[60] lg:hidden p-3 rounded-2xl border shadow-2xl transition-all bg-[#050505] border-white/10 text-white active:scale-90"
+        className="fixed top-4 left-4 z-[60] lg:hidden p-3 rounded-xl bg-[#050505] border border-white/10 text-white shadow-2xl active:scale-95 transition-transform"
       >
         <Menu size={20} />
       </button>
@@ -60,23 +55,23 @@ export default function Sidebar() {
       {/* --- MOBILE OVERLAY --- */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
       {/* --- SIDEBAR ASIDE --- */}
       <aside 
-        className={`fixed lg:sticky top-0 left-0 h-screen z-[70] transition-all duration-500 ease-in-out border-r flex flex-col py-6 bg-[#050505] border-white/5
+        className={`fixed lg:sticky top-0 left-0 h-screen z-[70] transition-all duration-300 ease-in-out border-r flex flex-col py-6 bg-[#050505] border-white/5
           ${isCollapsed ? "lg:w-20" : "lg:w-64"} 
           ${isMobileOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:translate-x-0"}
         `}
       >
-        {/* Header/Toggle Section */}
-        <div className="flex items-center justify-between px-4 mb-8">
-          {!isCollapsed && (
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 select-none">
-               Navigation
+        {/* Header Section */}
+        <div className={`flex items-center mb-8 px-4 ${isCollapsed ? "justify-center" : "justify-between"}`}>
+          {(!isCollapsed || isMobileOpen) && (
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 select-none ml-2">
+                Navigation
              </span>
           )}
           
@@ -89,29 +84,34 @@ export default function Sidebar() {
         </div>
 
         {/* Links Section */}
-        <nav className="space-y-1.5 flex-grow overflow-y-auto px-3 
-          scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <nav className="flex-grow overflow-y-auto px-3 space-y-2 scrollbar-hide">
           {navItems.map((item) => (
             <SidebarLink 
               key={item.href}
               {...item}
               active={pathname === item.href}
-              isCollapsed={isCollapsed}
+              // Force "expanded" look on mobile drawer
+              isCollapsed={isMobileOpen ? false : isCollapsed}
             />
           ))}
         </nav>
 
-        {/* Optional: System Status at bottom */}
-        {!isCollapsed && (
-          <div className="px-6 mt-4">
-            <div className="p-3 rounded-2xl bg-white/5 border border-white/5">
-               <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Engine Online</span>
-               </div>
-            </div>
+        {/* System Status Section */}
+        <div className="px-3 mt-4">
+          <div className={`flex items-center bg-white/5 border border-white/5 rounded-2xl transition-all duration-300
+            ${isCollapsed && !isMobileOpen ? "justify-center p-3" : "p-4"}
+          `}>
+             <div className="relative flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping opacity-75" />
+             </div>
+             {(!isCollapsed || isMobileOpen) && (
+               <span className="ml-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                 Engine Online
+               </span>
+             )}
           </div>
-        )}
+        </div>
       </aside>
     </>
   );
@@ -121,25 +121,35 @@ function SidebarLink({ icon, label, href, active, isCollapsed }: SidebarLinkProp
   return (
     <Link 
       href={href}
-      className={`flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative
+      title={isCollapsed ? label : ""} // Show tooltip text on hover when collapsed
+      className={`flex items-center transition-all duration-200 group relative
         ${active 
-          ? "bg-blue-600/10 text-blue-500 shadow-[inset_0_0_20px_rgba(37,99,235,0.05)] border border-blue-500/10" 
+          ? "bg-blue-600/10 text-blue-500 border border-blue-500/20" 
           : "text-slate-500 hover:text-white hover:bg-white/5 border border-transparent" 
-        } ${isCollapsed ? "lg:justify-center lg:px-0" : "w-full"}`}
+        } 
+        ${isCollapsed 
+          ? "justify-center h-12 w-12 mx-auto rounded-xl" // Centered Square
+          : "px-4 py-3 gap-4 w-full rounded-2xl"          // Full Row
+        }`}
     >
       <span className={`shrink-0 transition-colors ${active ? "text-blue-500" : "group-hover:text-blue-400"}`}>
         {icon}
       </span>
       
-      <span className={`text-sm font-bold tracking-tight whitespace-nowrap transition-all duration-300
-        ${isCollapsed ? "lg:hidden opacity-0" : "block opacity-100"}
-      `}>
-        {label}
-      </span>
+      {/* Label logic: completely removed from DOM when collapsed to ensure centering */}
+      {!isCollapsed && (
+        <span className="text-sm font-bold tracking-tight whitespace-nowrap overflow-hidden animate-in fade-in slide-in-from-left-1">
+          {label}
+        </span>
+      )}
 
+      {/* Indicator Dot */}
       {active && (
-        <div className={`absolute right-2 w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_12px_#3b82f6] 
-          ${isCollapsed ? "lg:hidden" : "block"}`} 
+        <div className={`absolute bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6] transition-all
+          ${isCollapsed 
+            ? "right-1 top-1 w-1.5 h-1.5" 
+            : "right-3 w-1.5 h-1.5"
+          }`} 
         />
       )}
     </Link>

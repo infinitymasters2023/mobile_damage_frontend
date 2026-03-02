@@ -39,6 +39,7 @@ export default function ImageUploader({ onUpload }: ImageUploaderProps) {
       />
 
       <div className="py-10 sm:py-16 flex flex-col items-center text-center px-6">
+        
         {/* Animated Icon Container */}
         <div className="relative mb-4">
           <div className="absolute inset-0 bg-blue-500/20 blur-2xl rounded-full animate-pulse" />

@@ -2,7 +2,6 @@
 import { Sun, Moon } from "lucide-react";
 import Image from "next/image";
 
-
 interface HeaderProps {
   theme: "dark" | "light";
   toggleTheme: () => void;

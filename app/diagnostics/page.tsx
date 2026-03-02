@@ -73,22 +73,18 @@ export default function UploadPage() {
               className="h-8 object-contain"
             /> 
         </h1>
-
         <div className="flex items-center gap-3">
           <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20 animate-pulse">
             Mobile Damage 
           </div>
         </div>
       </header>
-
       {/* --- MAIN CONTENT --- */}
       <main className="p-4 sm:p-8 max-w-[1600px] w-full mx-auto flex-grow">
-        <div className="grid grid-cols-12 gap-6 lg:gap-8">
-          
+        <div className="grid grid-cols-12 gap-6 lg:gap-8"> 
           {/* Left Column: Uploader & Results */}
           <div className="col-span-12 lg:col-span-7 space-y-6">
             <ImageUploader onUpload={handleUpload} />
-
             <div className="rounded-[32px] sm:rounded-[40px] p-6 sm:p-8 border border-white/10 bg-white/5 backdrop-blur-xl transition-all">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <h3 className="text-lg font-bold">Detection Results</h3>
@@ -98,7 +94,6 @@ export default function UploadPage() {
                   </button>
                 )}
               </div>
-
               {activeSelections.length > 0 ? (
                 <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                   {activeSelections.map((img) => <DetailCard key={img.url} image={img} />)}
@@ -120,7 +115,6 @@ export default function UploadPage() {
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );
