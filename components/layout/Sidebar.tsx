@@ -6,37 +6,47 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png"; 
 import { 
-  LayoutDashboard, CreditCard, BookOpen, Barcode, Receipt, 
-  Contact2, Cpu, ShoppingBag, FileText, UserCheck, 
-  Languages, ChevronLeft, ChevronRight, Menu, X, ChevronDown 
+  LayoutDashboard, CreditCard, Barcode, ShoppingBag, 
+  FileText, Languages, ChevronLeft, ChevronRight, Menu, X, Smartphone 
 } from 'lucide-react';
 
 const navItems = [
-  { icon: <LayoutDashboard size={20} />, label: "Overview", href: "/" },
-  { icon: <CreditCard size={20} />, label: "Ocr to Cheque", href: "/ocrcheque" },
-  { icon: <BookOpen size={20} />, label: "Ocr to Passbook", href: "/ocr_passbook" },
-  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Ocr_Barcode_read" },
-  { icon: <Receipt size={20} />, label: "Payment Proof", href: "/Ocr_Payment_Proof"},
-  { icon: <Contact2 size={20} />, label: "Ocr Bank ID", href: "/Ocr_Bank-ID"},
-  { icon: <Cpu size={20} />, label: "Ocr IMEI", href: "/Ocr_Imei"},
-  { icon: <ShoppingBag size={20} />, label: "Ocr Purchase Device", href: "/Ocr_Purchase_Device"},
-  { icon: <UserCheck size={20} />, label: "Ocr Kyc", href: "/Kyc"},
-  { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate"},
-];
+   { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
+   { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
+  { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
+ 
+  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },
+  { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_Purchase_Device" },
 
-const invoiceSubItems = [
-  { label: "Oppo", href: "/Invoice_Oppo" },
-  { label: "Samsung", href: "/Invoice_Samsung" },
-  { label: "Vivo", href: "/Invoice_Vivo" },
+  { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Persist collapse state & Handle initial mount
+  useEffect(() => {
+    const savedState = localStorage.getItem("sidebar-collapsed");
+    if (savedState !== null) {
+      setIsCollapsed(JSON.parse(savedState));
+    }
+    setIsMounted(true);
+  }, []);
+
+  const handleToggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem("sidebar-collapsed", JSON.stringify(newState));
+  };
 
   useEffect(() => { setIsMobileOpen(false); }, [pathname]);
+
+  // Prevent Hydration mismatch
+  if (!isMounted) return <div className="hidden lg:flex lg:w-64 h-screen bg-[#050505] border-r border-white/5" />;
 
   return (
     <>
@@ -60,7 +70,7 @@ export default function Sidebar() {
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsMobileOpen(false)} />
       )}
 
-      {/* ASIDE CONTAINER - Changed h-5/6 to h-screen */}
+      {/* SIDEBAR ASIDE */}
       <aside className={`fixed lg:sticky top-0 left-0 h-screen z-[70] transition-all duration-300 ease-in-out border-r border-white/5 bg-[#050505] flex flex-col py-6
         ${isCollapsed ? "lg:w-20" : "lg:w-64"} 
         ${isMobileOpen ? "translate-x-0 w-72" : "-translate-x-full lg:translate-x-0"}`}
@@ -68,17 +78,20 @@ export default function Sidebar() {
         {/* HEADER */}
         <div className={`flex items-center mb-8 px-4 ${isCollapsed && !isMobileOpen ? "lg:justify-center" : "justify-between"}`}>
           {(!isCollapsed || isMobileOpen) && (
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 ml-2 animate-in fade-in">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 ml-2 animate-in fade-in">
                 Navigation
-             </span>
+              </span>
           )}
-          <button onClick={() => setIsCollapsed(!isCollapsed)} className="hidden lg:flex p-2 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white transition-all">
+          <button 
+            onClick={handleToggleCollapse} 
+            className="hidden lg:flex p-2 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white transition-all"
+          >
             {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
           <button onClick={() => setIsMobileOpen(false)} className="lg:hidden p-2 text-slate-400"><X size={20} /></button>
         </div>
 
-        {/* NAVIGATION */}
+        {/* NAVIGATION LINKS */}
         <nav className="flex-grow overflow-y-auto px-3 space-y-1.5 scrollbar-hide">
           {navItems.map((item) => (
             <SidebarLink 
@@ -88,34 +101,19 @@ export default function Sidebar() {
               isCollapsed={isMobileOpen ? false : isCollapsed} 
             />
           ))}
-          
-          <div className="pt-2">
-            <button onClick={() => { if (isCollapsed) setIsCollapsed(false); setIsInvoiceOpen(!isInvoiceOpen); }}
-              className={`flex items-center w-full transition-all duration-200 group
-                ${isCollapsed && !isMobileOpen ? "justify-center h-12 w-12 mx-auto rounded-xl" : "px-4 py-3 gap-4 rounded-2xl"}
-                ${pathname.includes("Invoice") ? "text-blue-500 bg-blue-500/5" : "text-slate-500 hover:text-white hover:bg-white/5"}
-              `}>
-              <FileText size={20} className="shrink-0" />
-              {(!isCollapsed || isMobileOpen) && (
-                <>
-                  <span className="text-sm font-bold flex-grow text-left">Invoices</span>
-                  <ChevronDown size={16} className={`transition-transform duration-300 ${isInvoiceOpen ? "rotate-180" : ""}`} />
-                </>
-              )}
-            </button>
-            {(!isCollapsed || isMobileOpen) && isInvoiceOpen && (
-              <div className="mt-1 ml-9 space-y-1 animate-in slide-in-from-top-2 duration-300">
-                {invoiceSubItems.map((sub) => (
-                  <Link key={sub.href} href={sub.href} className={`block px-4 py-2 text-sm rounded-xl transition-colors ${pathname === sub.href ? "text-blue-500 font-bold" : "text-slate-500 hover:text-white"}`}>
-                    {sub.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
         </nav>
 
-       
+        {/* SYSTEM STATUS */}
+        <div className="px-3 mt-4">
+          <div className={`flex items-center bg-[#0C0C0C] border border-white/5 rounded-2xl transition-all duration-300 ${isCollapsed && !isMobileOpen ? "justify-center p-3" : "p-4"}`}>
+             <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shrink-0 shadow-[0_0_8px_#10B981]" />
+             {(!isCollapsed || isMobileOpen) && (
+                <span className="ml-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                   System Active
+                </span>
+             )}
+          </div>
+        </div>
       </aside>
     </>
   );
