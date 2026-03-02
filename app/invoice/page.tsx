@@ -207,7 +207,7 @@ export default function EnterpriseOCR() {
                 onChange={e => setEngineProfile(e.target.value)} 
                 className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl pl-5 pr-12 py-4 text-xs font-bold text-white outline-none cursor-pointer hover:border-blue-500/50 transition-all appearance-none shadow-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
               >
-                <option className="bg-[#0a0a0a]">Oppo</option>
+                <option className="bg-[#0a0a0a]">Oppo </option>
                 <option className="bg-[#0a0a0a]">Vivo</option>
                 <option className="bg-[#0a0a0a]">Sumsung</option>
                
