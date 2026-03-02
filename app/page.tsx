@@ -73,7 +73,7 @@ export default function MobileDamageAI() {
           <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">
             <span>CORE INTELLIGENCE</span>
             <span className="text-white/20">/</span>
-            <span className="text-blue-500">DAMAGE ASSESSMENT</span>
+            <span className="text-blue-500">DAMAGE ASSESSMENT 🔥</span>
           </nav>
         </div>
       </header>
