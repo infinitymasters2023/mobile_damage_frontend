@@ -76,7 +76,7 @@ export default function UploadPage() {
 
         <div className="flex items-center gap-3">
           <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20 animate-pulse">
-            Mobile Damage 
+            Mobile Damage  
           </div>
         </div>
       </header>

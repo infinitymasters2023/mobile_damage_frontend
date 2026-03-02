@@ -51,7 +51,7 @@ export default function Sidebar() {
           </div>
         </div>
         <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/5 px-3 py-1 rounded border border-blue-500/20">
-          Engine v4
+          Engine v4 
         </div>
       </div>
 

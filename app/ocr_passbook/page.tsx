@@ -116,7 +116,7 @@ export default function PassbookOCRPage() {
                 ) : (
                   <div className="py-32 text-center opacity-30">
                     <FileText size={48} className="mx-auto mb-4" />
-                    <p className="text-sm font-medium tracking-wide">Upload passbook pages to begin OCR sequence</p>
+                    <p className="text-sm font-medium tracking-wide">Upload passbook pages to begin OCR sequence </p>
                   </div>
                 )}
               </div>

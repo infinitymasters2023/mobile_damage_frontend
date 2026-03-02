@@ -153,9 +153,10 @@ export default function ChequeOCRPage() {
                     >
                       {/* Aspect Ratio Box for Cheque (approx 2.1:1) */}
                       <div className="aspect-[2.1/1] w-full bg-white/5 relative">
-                        <img
+                        <Image
                           src={img.url}
                           alt={img.name}
+                          fill
                           className={`w-full h-full object-cover transition-opacity duration-500 
                   ${img.status === "analyzing" ? "opacity-30 blur-[2px]" : "opacity-100"}
                 `}
@@ -212,8 +213,8 @@ function ExtractionRow({ image }: { image: UploadedImage }) {
       }`}>
       <div className="p-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-white/10 overflow-hidden flex-shrink-0 border border-white/10 group-hover:border-blue-500/50 transition-colors">
-            <img src={image.url} className="w-full h-full object-cover opacity-60 group-hover:opacity-100" />
+          <div className="w-10 h-10 rounded-lg bg-white/10 overflow-hidden flex-shrink-0 border border-white/10 group-hover:border-blue-500/50 transition-colors relative">
+            <Image src={image.url} alt={image.name} fill className="w-full h-full object-cover opacity-60 group-hover:opacity-100" />
           </div>
           <div>
             <p className="text-[10px] font-bold text-slate-300 uppercase tracking-tight">{image.name}</p>
