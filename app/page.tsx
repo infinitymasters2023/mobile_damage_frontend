@@ -176,7 +176,7 @@ export default function MobileDamageAI() {
               </div>
             </div>
             <button disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-blue-500 disabled:opacity-30 transition-all mt-auto shadow-xl shadow-blue-900/20">
-              <Bolt size={18} /> Run Assessment dddd
+              <Bolt size={18} /> Run Assessment
             </button>
           </div>
         </aside>
