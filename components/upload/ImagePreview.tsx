@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { UploadedImage } from "@/app/page";
+import { UploadedImage } from "./upload";
+
 
 interface ImagePreviewProps {
   files: UploadedImage[];
