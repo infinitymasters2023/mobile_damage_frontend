@@ -1,157 +1,138 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import Logo from "@/app/img/infinity-logo-164.png"; 
 import { 
   LayoutDashboard, CreditCard, BookOpen, Barcode, Receipt, 
   Contact2, Cpu, ShoppingBag, FileText, UserCheck, 
-  Languages, ChevronLeft, ChevronRight, Menu, X 
+  Languages, ChevronLeft, ChevronRight, Menu, X, ChevronDown 
 } from 'lucide-react';
 
 const navItems = [
   { icon: <LayoutDashboard size={20} />, label: "Overview", href: "/" },
-  { icon: <CreditCard size={20} />, label: "Ocr to Cheque", href: "/diagnostics" },
-  { icon: <BookOpen size={20} />, label: "Ocr to Passbook", href: "/Ocr_Passbook" },
+  { icon: <CreditCard size={20} />, label: "Ocr to Cheque", href: "/ocrcheque" },
+  { icon: <BookOpen size={20} />, label: "Ocr to Passbook", href: "/ocr_passbook" },
   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Ocr_Barcode_read" },
   { icon: <Receipt size={20} />, label: "Payment Proof", href: "/Ocr_Payment_Proof"},
   { icon: <Contact2 size={20} />, label: "Ocr Bank ID", href: "/Ocr_Bank-ID"},
   { icon: <Cpu size={20} />, label: "Ocr IMEI", href: "/Ocr_Imei"},
   { icon: <ShoppingBag size={20} />, label: "Ocr Purchase Device", href: "/Ocr_Purchase_Device"},
-  { icon: <FileText size={20} />, label: "Invoice", href: "/Invoice_Oppo"},  
   { icon: <UserCheck size={20} />, label: "Ocr Kyc", href: "/Kyc"},
   { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate"},
 ];
 
-interface SidebarLinkProps {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-  active: boolean;
-  isCollapsed: boolean;
-}
+const invoiceSubItems = [
+  { label: "Oppo", href: "/Invoice_Oppo" },
+  { label: "Samsung", href: "/Invoice_Samsung" },
+  { label: "Vivo", href: "/Invoice_Vivo" },
+];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [, startTransition] = useTransition();
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
-  // Auto-close mobile sidebar on navigation
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
+  useEffect(() => { setIsMobileOpen(false); }, [pathname]);
 
   return (
     <>
-      {/* --- MOBILE TRIGGER --- */}
-      <button 
-        onClick={() => setIsMobileOpen(true)}
-        className="fixed top-4 left-4 z-[60] lg:hidden p-3 rounded-xl bg-[#050505] border border-white/10 text-white shadow-2xl active:scale-95 transition-transform"
-      >
-        <Menu size={20} />
-      </button>
+      {/* MOBILE TOP BAR */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#050505] border-b border-white/5 flex items-center justify-between px-4 z-[50]">
+        <div className="flex items-center gap-4">
+          <button onClick={() => setIsMobileOpen(true)} className="p-2 text-white bg-white/5 rounded-lg border border-white/10">
+            <Menu size={20} />
+          </button>
+          <div className="bg-white p-1 rounded-md shrink-0">
+            <Image src={Logo} alt="logo" width={100} height={24} className="h-5 w-auto object-contain" />
+          </div>
+        </div>
+        <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/5 px-3 py-1 rounded border border-blue-500/20">
+          Engine v4
+        </div>
+      </div>
 
-      {/* --- MOBILE OVERLAY --- */}
+      {/* OVERLAY */}
       {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden animate-in fade-in duration-300"
-          onClick={() => setIsMobileOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] lg:hidden" onClick={() => setIsMobileOpen(false)} />
       )}
 
-      {/* --- SIDEBAR ASIDE --- */}
-      <aside 
-        className={`fixed lg:sticky top-0 left-0 h-screen z-[70] transition-all duration-300 ease-in-out border-r flex flex-col py-6 bg-[#050505] border-white/5
-          ${isCollapsed ? "lg:w-20" : "lg:w-64"} 
-          ${isMobileOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:translate-x-0"}
-        `}
+      {/* ASIDE CONTAINER - Changed h-5/6 to h-screen */}
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen z-[70] transition-all duration-300 ease-in-out border-r border-white/5 bg-[#050505] flex flex-col py-6
+        ${isCollapsed ? "lg:w-20" : "lg:w-64"} 
+        ${isMobileOpen ? "translate-x-0 w-72" : "-translate-x-full lg:translate-x-0"}`}
       >
-        {/* Header Section */}
-        <div className={`flex items-center mb-8 px-4 ${isCollapsed ? "justify-center" : "justify-between"}`}>
+        {/* HEADER */}
+        <div className={`flex items-center mb-8 px-4 ${isCollapsed && !isMobileOpen ? "lg:justify-center" : "justify-between"}`}>
           {(!isCollapsed || isMobileOpen) && (
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 select-none ml-2">
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 ml-2 animate-in fade-in">
                 Navigation
              </span>
           )}
-          
-          <button 
-            onClick={() => isMobileOpen ? setIsMobileOpen(false) : setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-xl border transition-all bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
-          >
-            {isMobileOpen ? <X size={18} /> : isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          <button onClick={() => setIsCollapsed(!isCollapsed)} className="hidden lg:flex p-2 rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white transition-all">
+            {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
+          <button onClick={() => setIsMobileOpen(false)} className="lg:hidden p-2 text-slate-400"><X size={20} /></button>
         </div>
 
-        {/* Links Section */}
-        <nav className="flex-grow overflow-y-auto px-3 space-y-2 scrollbar-hide">
+        {/* NAVIGATION */}
+        <nav className="flex-grow overflow-y-auto px-3 space-y-1.5 scrollbar-hide">
           {navItems.map((item) => (
             <SidebarLink 
-              key={item.href}
-              {...item}
-              active={pathname === item.href}
-              // Force "expanded" look on mobile drawer
-              isCollapsed={isMobileOpen ? false : isCollapsed}
+              key={item.href} 
+              {...item} 
+              active={pathname === item.href} 
+              isCollapsed={isMobileOpen ? false : isCollapsed} 
             />
           ))}
+          
+          <div className="pt-2">
+            <button onClick={() => { if (isCollapsed) setIsCollapsed(false); setIsInvoiceOpen(!isInvoiceOpen); }}
+              className={`flex items-center w-full transition-all duration-200 group
+                ${isCollapsed && !isMobileOpen ? "justify-center h-12 w-12 mx-auto rounded-xl" : "px-4 py-3 gap-4 rounded-2xl"}
+                ${pathname.includes("Invoice") ? "text-blue-500 bg-blue-500/5" : "text-slate-500 hover:text-white hover:bg-white/5"}
+              `}>
+              <FileText size={20} className="shrink-0" />
+              {(!isCollapsed || isMobileOpen) && (
+                <>
+                  <span className="text-sm font-bold flex-grow text-left">Invoices</span>
+                  <ChevronDown size={16} className={`transition-transform duration-300 ${isInvoiceOpen ? "rotate-180" : ""}`} />
+                </>
+              )}
+            </button>
+            {(!isCollapsed || isMobileOpen) && isInvoiceOpen && (
+              <div className="mt-1 ml-9 space-y-1 animate-in slide-in-from-top-2 duration-300">
+                {invoiceSubItems.map((sub) => (
+                  <Link key={sub.href} href={sub.href} className={`block px-4 py-2 text-sm rounded-xl transition-colors ${pathname === sub.href ? "text-blue-500 font-bold" : "text-slate-500 hover:text-white"}`}>
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* System Status Section */}
-        <div className="px-3 mt-4">
-          <div className={`flex items-center bg-white/5 border border-white/5 rounded-2xl transition-all duration-300
-            ${isCollapsed && !isMobileOpen ? "justify-center p-3" : "p-4"}
-          `}>
-             <div className="relative flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping opacity-75" />
-             </div>
-             {(!isCollapsed || isMobileOpen) && (
-               <span className="ml-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                 Engine Online
-               </span>
-             )}
-          </div>
-        </div>
+       
       </aside>
     </>
   );
 }
 
-function SidebarLink({ icon, label, href, active, isCollapsed }: SidebarLinkProps) {
+function SidebarLink({ icon, label, href, active, isCollapsed }: any) {
   return (
     <Link 
-      href={href}
-      title={isCollapsed ? label : ""} // Show tooltip text on hover when collapsed
+      href={href} 
+      title={isCollapsed ? label : ""}
       className={`flex items-center transition-all duration-200 group relative
-        ${active 
-          ? "bg-blue-600/10 text-blue-500 border border-blue-500/20" 
-          : "text-slate-500 hover:text-white hover:bg-white/5 border border-transparent" 
-        } 
-        ${isCollapsed 
-          ? "justify-center h-12 w-12 mx-auto rounded-xl" // Centered Square
-          : "px-4 py-3 gap-4 w-full rounded-2xl"          // Full Row
-        }`}
+        ${active ? "bg-blue-600/10 text-blue-500 border border-blue-500/20 shadow-[inset_0_0_10px_rgba(37,99,235,0.05)]" : "text-slate-500 hover:text-white hover:bg-white/5 border border-transparent"} 
+        ${isCollapsed ? "justify-center h-12 w-12 mx-auto rounded-xl" : "px-4 py-3 gap-4 w-full rounded-2xl"}`}
     >
-      <span className={`shrink-0 transition-colors ${active ? "text-blue-500" : "group-hover:text-blue-400"}`}>
-        {icon}
-      </span>
-      
-      {/* Label logic: completely removed from DOM when collapsed to ensure centering */}
-      {!isCollapsed && (
-        <span className="text-sm font-bold tracking-tight whitespace-nowrap overflow-hidden animate-in fade-in slide-in-from-left-1">
-          {label}
-        </span>
-      )}
-
-      {/* Indicator Dot */}
-      {active && (
-        <div className={`absolute bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6] transition-all
-          ${isCollapsed 
-            ? "right-1 top-1 w-1.5 h-1.5" 
-            : "right-3 w-1.5 h-1.5"
-          }`} 
-        />
-      )}
+      <span className={`shrink-0 ${active ? "text-blue-500" : "group-hover:text-blue-400"}`}>{icon}</span>
+      {!isCollapsed && <span className="text-sm font-bold tracking-tight whitespace-nowrap">{label}</span>}
+      {active && <div className={`absolute bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6] ${isCollapsed ? "right-1 top-1 w-1.5 h-1.5" : "right-3 w-1.5 h-1.5"}`} />}
     </Link>
   );
 }
