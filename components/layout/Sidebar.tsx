@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -10,26 +10,30 @@ import {
   FileText, Languages, ChevronLeft, ChevronRight, Menu, X, Smartphone 
 } from 'lucide-react';
 
-// 1. Define Types for your Nav Items to stop "any" errors
+// 1. Define Types
 interface NavItem {
   icon: React.ReactNode;
   label: string;
   href: string;
 }
 
+interface SidebarLinkProps extends NavItem {
+  active: boolean;
+  isCollapsed: boolean;
+}
+
 const navItems: NavItem[] = [
    { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
-   { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" }, 
-   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },
-   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_purchase_device" },
+   { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
+   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_purchase_device" }, 
+   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },  
    { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   
-  // Initialize state as false, then update in useEffect to avoid Hydration Mismatch
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -37,24 +41,29 @@ export default function Sidebar() {
   // 2. Handle Initial Mount and LocalStorage
   useEffect(() => {
     setIsMounted(true);
-    const savedState = localStorage.getItem("sidebar-collapsed");
-    if (savedState !== null) {
-      setIsCollapsed(JSON.parse(savedState));
+    try {
+      const savedState = localStorage.getItem("sidebar-collapsed");
+      if (savedState !== null) {
+        // Cast as boolean to prevent type errors
+        setIsCollapsed(JSON.parse(savedState) as boolean);
+      }
+    } catch (e) {
+      console.error("Sidebar state error:", e);
     }
   }, []);
+
+  // 3. Close mobile sidebar on route change
+  // We include setIsMobileOpen to satisfy exhaustive-deps linter
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname, setIsMobileOpen]);
 
   const handleToggleCollapse = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
     localStorage.setItem("sidebar-collapsed", JSON.stringify(newState));
   };
-
-  // Close mobile sidebar on route change
-  useEffect(() => {
-    setIsMobileOpen(false);
-    // Close mobile sidebar on route change by setting state to false
-  }, [pathname]);
-
+  
   // Prevent Hydration mismatch: Render a shell until mounted
   if (!isMounted) {
     return <div className="hidden lg:flex lg:w-64 h-screen bg-[#050505] border-r border-white/5" />;

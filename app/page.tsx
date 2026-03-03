@@ -17,7 +17,9 @@ export default function EnterpriseOCR() {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [engineProfile, setEngineProfile] = useState("Ocr to Cheque");
   const [termCopied, setTermCopied] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
+  
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent) => {
     let files: File[] = [];
     if ('files' in e.target && e.target.files) {
@@ -39,6 +41,8 @@ export default function EnterpriseOCR() {
     setImages([newImg]);
     analyzeDocument(newImg.url);
   };
+
+  
 
   const analyzeDocument = async (imgUrl: string) => {
     let currentProgress = 0;
@@ -201,10 +205,9 @@ export default function EnterpriseOCR() {
                     key={img.url}
                     onClick={() => setActiveIndex(idx)}
                     className={`aspect-square rounded-lg border-2 cursor-pointer relative overflow-hidden transition-all duration-300 ${activeIndex === idx
-                      ? 'border-blue-500 scale-105 shadow-[0_0_15px_#3b82f666] z-10'
-                      : 'border-white/5 opacity-40 hover:opacity-100'
-                      }`}
-                  >
+                        ? 'border-blue-500 scale-105 shadow-[0_0_15px_#3b82f666] z-10'
+                        : 'border-white/5 opacity-40 hover:opacity-100'
+                      }`} >
                     <Image src={img.url} fill className="object-cover" alt="thumb" />
                   </div>
                 ))}
@@ -217,9 +220,9 @@ export default function EnterpriseOCR() {
               </div>
 
               <div className="mt-5">
-                <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl">
-                  <Bolt size={16} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Extraction
-                </button>
+                 <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl">
+              <Bolt size={16} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Extraction
+            </button>
               </div>
             </div>
           </div>
