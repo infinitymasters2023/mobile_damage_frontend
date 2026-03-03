@@ -153,7 +153,7 @@ export default function AudioTranslate() {
                 <select 
                   value={targetLanguage}
                   onChange={(e) => setTargetLanguage(e.target.value)}
-                  className="w-full p-3 rounded-xl bg-white/5 border border-white/10 font-bold text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-blue-500/50 transition-all hover:bg-white/[0.08]"
+                  className="w-full p-2 rounded-xl bg-white/5 border border-white/10 font-bold text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-blue-500/50 transition-all hover:bg-white/[0.08]"
                 >
                   {languages.map((lang) => (
                     <option key={lang.code} value={lang.code} className="bg-[#0a0a0a] text-white">
