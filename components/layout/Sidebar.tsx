@@ -26,7 +26,7 @@ const navItems: NavItem[] = [
    { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
    { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
-   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_purchase_device" }, 
+   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/ocr_purchase_device" }, 
    { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },  
    { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
 ];
