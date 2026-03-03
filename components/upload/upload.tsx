@@ -48,10 +48,8 @@ export default function UploadPage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#050505] text-white font-sans selection:bg-blue-500/30">
-      <Header theme={"dark"} toggleTheme={function (): void {
-        throw new Error("Function not implemented.");
-      } } />
+    <>
+      <Header title="Mobile Damage Analysis" />
 
       {/* Main Container: Responsive padding aur width limits */}
       <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-[1800px] mx-auto w-full">
@@ -108,7 +106,7 @@ export default function UploadPage() {
       </main>
 
       <Footer />
-    </div>
+    </>
   );
 }
 

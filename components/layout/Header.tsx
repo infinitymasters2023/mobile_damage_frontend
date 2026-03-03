@@ -1,46 +1,46 @@
 "use client";
-import { Sun, Moon } from "lucide-react";
+
+import React from "react";
 import Image from "next/image";
+import Logo from "@/app/img/infinity-logo-164.png";
 
 interface HeaderProps {
-  theme: "dark" | "light";
-  toggleTheme: () => void;
+  title: string;
 }
 
-export default function Header({ theme, toggleTheme }: HeaderProps) {
+export default function Header({ title }: HeaderProps) {
   return (
-    <header
-      className={`h-20 border-b flex items-center justify-between px-8 backdrop-blur-md sticky top-0 z-40 transition-colors ${
-        theme === "dark"
-          ? "border-white/5 bg-[#050505]/50"
-          : "border-slate-200 bg-white/70"
-      }`}
-    >
-      <h1 className="bg-white p-2 rounded-xl">
-        <Image
-          src="/img/infinity-logo-164.png"
-          alt="logo"
-          width={150}
-          height={32}
-          className="h-8 object-contain"
-        />
-      </h1>
-
-      <div className="flex items-center gap-4">
-        <button
-          onClick={toggleTheme}
-          className={`p-2.5 rounded-xl border transition-all ${
-            theme === "dark"
-              ? "bg-white/5 border-white/10 text-yellow-400 hover:bg-white/10"
-              : "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
-          }`}
-        >
-          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
-
-        <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20 animate-pulse">
-          System Active
+    <header className="hidden lg:flex h-16 border-b border-white/5 bg-[#0a0a0a] items-center justify-between px-8 shrink-0 z-50 sticky top-0 backdrop-blur-md">
+      <div className="flex items-center gap-6">
+        {/* Logo Container */}
+        <div className="bg-white p-1.5 rounded-lg shadow-xl shadow-white/5">
+          <Image 
+            src={Logo} 
+            alt="logo" 
+            width={90} 
+            height={20} 
+            className="h-5 object-contain" 
+            priority 
+          />
         </div>
+
+        {/* Vertical Divider */}
+        <div className="h-6 w-[1px] bg-white/10" />
+
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+          <span>CORE INTELLIGENCE</span>
+          <span className="text-white/20">/</span>
+          <span className="text-blue-500">{title}</span>
+        </nav>
+      </div>
+
+      {/* Optional: Right side status indicator */}
+      <div className="flex items-center gap-3 bg-blue-500/5 px-4 py-2 rounded-full border border-blue-500/20">
+        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
+        <span className="text-[9px] font-black uppercase tracking-widest text-blue-500">
+          System Active
+        </span>
       </div>
     </header>
   );
