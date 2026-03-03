@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Barcode, Scan, Copy, CheckSquare, Upload, X, Database, Zap, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface ScannedItem {
   id: string;
@@ -200,6 +201,7 @@ export default function BarcodeReader() {
           </div>
         </aside>
       </main>
+    <Footer/>
 
       <style jsx global>{`
         @keyframes scan {

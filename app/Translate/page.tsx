@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Languages, Copy, CheckSquare, FileAudio, Loader2, Upload, X, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 // Define structure for the uploaded asset
 interface AudioAsset {
@@ -75,7 +76,6 @@ export default function AudioTranslate() {
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
       <Header title="Audio Translate" />
-
       <main className="flex-grow flex flex-col mt-[80px] lg:mt-[20px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-100px)]">
         
         {/* LEFT COLUMN: AUTO-DETECTION UPLOAD */}
@@ -196,6 +196,7 @@ export default function AudioTranslate() {
           </div>
         </aside>
       </main>
+      <Footer/>
     </div>
   );
 }
