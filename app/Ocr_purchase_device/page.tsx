@@ -17,6 +17,7 @@ export default function EnterpriseOCR() {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [engineProfile, setEngineProfile] = useState("Ocr to Cheque");
   const [termCopied, setTermCopied] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent) => {
     let files: File[] = [];
