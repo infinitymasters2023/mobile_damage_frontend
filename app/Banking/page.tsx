@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Bolt, Copy, Bell, Upload, ShieldCheck, CheckSquare, Maximize2 } from "lucide-react";
-import Image from "next/image";
-import Logo from "@/app/img/infinity-logo-164.png";
+import { useState } from "react";
+import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, Menu } from "lucide-react";
+import Header from "@/components/layout/Header";
 
 export interface UploadedImage {
   url: string;
@@ -18,7 +17,6 @@ export default function EnterpriseOCR() {
   const [engineProfile, setEngineProfile] = useState("Ocr to Cheque");
   const [termCopied, setTermCopied] = useState(false);
 
-  // Handle file injection into pipeline
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent) => {
     let files: File[] = [];
     if ('files' in e.target && e.target.files) {
@@ -52,7 +50,6 @@ export default function EnterpriseOCR() {
       setImages(prev => prev.map(img => img.url === imgUrl ? { ...img, progress: currentProgress } : img));
     }, 400);
 
-    // Simulated API Latency
     await new Promise(r => setTimeout(r, 3200));
     setImages(prev => prev.map(img => img.url === imgUrl ? {
       ...img,
@@ -80,41 +77,25 @@ export default function EnterpriseOCR() {
   const active = images[0] || null;
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#050505] text-white overflow-hidden font-sans select-none">
+    <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans select-none overflow-x-hidden">
+      <Header title="Banking" />
 
-      {/* HEADER */}
-      <header className="h-16 border-b border-white/5 bg-[#0a0a0a] flex items-center justify-between px-8 shrink-0 z-50">
-        <div className="flex items-center gap-6">
-          <div className="bg-white p-1.5 rounded-lg shadow-xl shadow-white/5">
-            <Image src={Logo} alt="logo" width={90} height={20} className="h-5 object-contain" />
-          </div>
-          <div className="h-6 w-[1px] bg-white/10" />
-          <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">
-            <span>CORE INTELLIGENCE</span>
-            <span className="text-white/20">/</span>
-            <span className="text-blue-500">BANKING PIPELINE</span>
-          </nav>
-        </div>
+      {/* MAIN CONTENT GRID: Column on mobile, Row on LG desktop */}
+      <main className="flex-grow flex flex-col mt-[70px] lg:mt-[10px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-64px-32px)]">
 
+        {/* LEFT COLUMN: SOURCE & TERMINAL */}
+        <div className="flex-[7] flex flex-col gap-4 min-w-0">
 
-      </header>
-
-      {/* MAIN CONTENT GRID */}
-      <main className="flex-grow flex p-4 gap-4 overflow-hidden h-[calc(100vh-64px-32px)]">
-
-        {/* LEFT COLUMN: SOURCE & TERMINAL (70%) */}
-        <div className="flex-[7] flex flex-col gap-4 min-w-0 h-full">
-
-          {/* SOURCE PANEL */}
-          <div className="flex-[6] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
+          {/* SOURCE PANEL: Added min-height for mobile visibility */}
+          <div className="flex-[6] min-h-[350px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
             <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Live Document Processing</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Live Document</span>
               <span className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-2 tracking-widest">
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> SOURCE
               </span>
             </div>
 
-            <div className="flex-grow flex items-center justify-center p-6 bg-black relative overflow-hidden">
+            <div className="flex-grow flex items-center justify-center p-4 md:p-6 bg-black relative overflow-hidden">
               {active ? (
                 <div className="relative h-full w-full flex items-center justify-center">
                   <img src={active.url} className="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-white/5" alt="source" />
@@ -125,12 +106,12 @@ export default function EnterpriseOCR() {
                   )}
                 </div>
               ) : (
-                <label onDragOver={e => e.preventDefault()} onDrop={handleUpload} className="group cursor-pointer flex flex-col items-center justify-center  rounded-[40px] w-full max-w-xl aspect-video  transition-all">
-                  <div className="p-4 rounded-2xl bg-blue-600 shadow-xl mb-6 group-hover:scale-110 transition-transform">
-                    <Upload className="text-white" size={30} />
+                <label onDragOver={e => e.preventDefault()} onDrop={handleUpload} className="group cursor-pointer flex flex-col items-center justify-center text-center w-full max-w-xl p-4 transition-all">
+                  <div className="p-4 rounded-2xl bg-blue-600 shadow-xl mb-4 group-hover:scale-110 transition-transform">
+                    <Upload className="text-white" size={24} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2 tracking-tight text-white">Drop device assets here</h3>
-                  <p className="text-slate-500 text-sm text-center px-10 max-w-sm">Drag and drop photos or <span className="text-blue-500 font-bold">browse files</span> for detection.</p>
+                  <h3 className="text-lg font-bold mb-2 text-white">Drop device assets here</h3>
+                  <p className="text-slate-500 text-xs px-4">Browse files for detection.</p>
                   <input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
                 </label>
               )}
@@ -138,119 +119,106 @@ export default function EnterpriseOCR() {
           </div>
 
           {/* TERMINAL PANEL */}
-          <div className="flex-[4] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Extraction Terminal</span>
-              <div className="flex items-center gap-5">
+          <div className="flex-[4] min-h-[250px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-3 border-b border-white/10 flex justify-between items-center px-4 md:px-6 bg-white/[0.02]">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Terminal</span>
+              <div className="flex items-center gap-3 md:gap-5">
                 <button
                   onClick={handleCopyTerminal}
                   disabled={active?.status !== 'completed'}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-emerald-500 transition-colors disabled:opacity-20"
+                  className="flex items-center gap-2 text-[9px] font-black uppercase text-slate-400 hover:text-emerald-500 transition-colors disabled:opacity-20"
                 >
-                  {termCopied ? <CheckSquare size={14} /> : <Copy size={14} />}
-                  {termCopied ? "Copied" : "Copy Data"}
+                  {termCopied ? <CheckSquare size={12} /> : <Copy size={12} />}
+                  <span className="hidden xs:inline">{termCopied ? "Copied" : "Copy Data"}</span>
                 </button>
-                <span className="text-[10px] font-black text-emerald-500 uppercase flex items-center gap-2 tracking-widest border-l border-white/10 pl-5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> LIVE FEED
+                <span className="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-2 tracking-widest border-l border-white/10 pl-3 md:pl-5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> <span className="hidden xs:inline">LIVE FEED</span>
                 </span>
               </div>
             </div>
-            <div className="flex-grow bg-[#050505] p-6 font-mono text-[13px] text-emerald-500 overflow-y-auto leading-relaxed scrollbar-hide">
+            <div className="flex-grow bg-[#050505] p-4 md:p-6 font-mono text-[12px] text-emerald-500 overflow-y-auto leading-relaxed scrollbar-hide">
               {active?.status === "completed" ? (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
                   <p className="mb-4 font-black">[SUCCESS] AI Extraction Complete:</p>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {Object.entries(active.extractedData).map(([key, val]) => (
-                      <p key={key} className="flex gap-4">
-                        <span className="opacity-50 min-w-[160px] uppercase tracking-tighter">{key} :</span>
-                        <span className="font-bold tracking-tight text-white">{val}</span>
-                      </p>
+                      <div key={key} className="flex flex-col sm:flex-row sm:gap-4 border-b border-white/5 pb-1 sm:border-0">
+                        <span className="opacity-50 text-[10px] sm:min-w-[140px] uppercase">{key} :</span>
+                        <span className="font-bold text-white break-all">{val}</span>
+                      </div>
                     ))}
                   </div>
-                  <p className="mt-4 font-bold text-emerald-600/60 tracking-widest uppercase">[STATUS] SECURELY LOGGED.</p>
                 </div>
               ) : (
                 <div className="h-full flex items-center justify-center opacity-30">
-                  <p className="animate-pulse tracking-[0.3em] text-[11px] uppercase">{"// Awaiting Engine Execution..."}</p>
+                  <p className="animate-pulse tracking-[0.2em] text-[10px] uppercase">{"// Awaiting Engine..."}</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR (30%) */}
-        <aside className="flex-[3] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col p-8 overflow-hidden min-w-[340px] shadow-2xl relative">
+        {/* RIGHT SIDEBAR: Becomes a card on mobile */}
+        <aside className="flex-[3] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col p-6 md:p-8 overflow-hidden min-w-full lg:min-w-[340px] shadow-2xl relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[80px] -z-10" />
-          <h3 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] mb-12 text-center">Analysis & Confidence</h3>
+          <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 text-center">Analysis</h3>
 
-          {/* CONFIDENCE ORB */}
-          <div className="flex flex-col items-center mb-5">
-            <div className="relative w-48 h-48 flex items-center justify-center">
-              <svg className="absolute inset-0 w-full h-full -rotate-90">
+          {/* CONFIDENCE ORB: Scaled for mobile */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative w-36 h-36 md:w-48 md:h-48 flex items-center justify-center">
+              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 192 192">
                 <circle cx="96" cy="96" r="86" className="stroke-white/5 fill-none" strokeWidth="10" />
                 <circle cx="96" cy="96" r="86" className="stroke-blue-600 fill-none transition-all duration-1000 ease-out"
                   strokeWidth="10" strokeDasharray={540} strokeDashoffset={540 - (540 * (active?.progress || 0)) / 100} strokeLinecap="round" />
               </svg>
               <div className="flex flex-col items-center">
-                <span className="text-5xl font-black text-white tracking-tighter">{active ? Math.floor(active.progress) : 0}%</span>
-                <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest mt-1">Accuracy</span>
+                <span className="text-3xl md:text-5xl font-black text-white tracking-tighter">{active ? Math.floor(active.progress) : 0}%</span>
+                <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest">Accuracy</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4 flex-grow">
+          <div className="space-y-6 flex-grow">
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">OCR Engine Profile</label>
-              <div className="relative group w-full mt-4">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">OCR Profile</label>
+              <div className="relative group w-full">
                 <select
                   value={engineProfile}
                   onChange={e => setEngineProfile(e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl pl-5 pr-12 py-4 text-xs font-bold text-white outline-none cursor-pointer hover:border-blue-500/50 transition-all appearance-none shadow-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                  className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white outline-none cursor-pointer appearance-none"
                 >
-                  <option className="bg-[#0a0a0a]">OCR to Cheque </option>
-                  <option className="bg-[#0a0a0a]">OCR to Passbook</option>
-                  <option className="bg-[#0a0a0a]">OCR Bank ID</option>
-                  <option className="bg-[#0a0a0a]">OCR IMEI</option>
+                  <option>OCR to Cheque</option>
+                  <option>OCR to Passbook</option>
+                  <option>OCR Bank ID</option>
+                  <option>OCR IMEI</option>
                 </select>
-
-                {/* Centered Bolt Icon */}
-                <Bolt
-                  size={14}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-blue-500 transition-colors pointer-events-none"
-                />
+                <Bolt size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               </div>
             </div>
 
-            <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl shadow-blue-900/20">
-              <Bolt size={18} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Run Extraction
+            <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl">
+              <Bolt size={16} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Extraction
             </button>
           </div>
-
-          <button className="w-full py-4 bg-white/[0.03] border border-white/5 rounded-xl flex items-center justify-center gap-3 text-[11px] font-black text-slate-400 hover:text-white transition-all uppercase mt-auto">
-            <Copy size={16} /> Copy Raw Data
-          </button>
         </aside>
       </main>
 
-      {/* FOOTER */}
-      <footer className="h-8 border-t border-white/5 bg-black px-8 flex items-center justify-between text-[10px] font-medium text-slate-500 shrink-0">
-        <div className="flex items-center gap-4 uppercase tracking-widest">
+      {/* FOOTER: Stacked on small screens */}
+      <footer className="h-auto md:h-8 py-4 md:py-0 border-t border-white/5 bg-black px-4 md:px-8 flex flex-col md:flex-row items-center justify-between text-[9px] font-medium text-slate-500 gap-2">
+        <div className="flex items-center gap-3 uppercase tracking-widest text-center">
           <span>&copy; 2026 INFINITY ASSURANCE</span>
-          <span className="text-white/10">|</span>
-          <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-emerald-500" /> SECURE NODE ACTIVE</div>
+          <div className="flex items-center gap-1.5"><ShieldCheck size={10} className="text-emerald-500" /> SECURE</div>
         </div>
-        <div className="flex gap-6 uppercase tracking-tighter">
-          <span className="hover:text-white cursor-pointer transition-colors">Latency: 142ms</span>
-          <span className="hover:text-white cursor-pointer transition-colors">Server: AWS-MUM-1</span>
+        <div className="hidden sm:flex gap-4 uppercase tracking-tighter">
+          <span>Latency: 142ms</span>
+          <span>AWS-MUM-1</span>
         </div>
       </footer>
 
-      {/* GLOBAL CSS ANIMATIONS */}
       <style jsx global>{`
         @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
         ::-webkit-scrollbar { width: 0px; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
       `}</style>
     </div>
   );

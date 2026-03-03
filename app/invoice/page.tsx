@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, FileText, Globe, Layers } from "lucide-react";
 import Image from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png";
+import Header from "@/components/layout/Header";
+
 
 export interface UploadedImage {
   url: string;
@@ -86,26 +88,13 @@ export default function EnterpriseOCR() {
   return (
     <div className="h-screen w-full flex flex-col bg-[#050505] text-white overflow-hidden font-sans select-none">
       
-      {/* HEADER */}
-      <header className="h-16 border-b border-white/5 bg-[#0a0a0a] flex items-center justify-between px-8 shrink-0 z-50">
-        <div className="flex items-center gap-6">
-          <div className="bg-white p-1.5 rounded-lg shadow-xl shadow-white/5">
-            <Image src={Logo} alt="logo" width={90} height={20} className="h-5 object-contain" />
-          </div>
-          <div className="h-6 w-[1px] bg-white/10" />
-          <nav className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-500">
-            <span>CORE INTELLIGENCE</span>
-            <span className="text-white/20">/</span>
-            <span className="text-blue-500">INVOICE PIPELINE</span>
-          </nav>
-        </div>
-      </header>
+   <Header title="Invoice" />
 
       {/* MAIN CONTENT GRID */}
-      <main className="flex-grow flex p-4 gap-4 overflow-hidden h-[calc(100vh-64px-32px)]">
+      <main className=" flex-grow flex flex-col mt-[70px] lg:mt-[10px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-64px-32px)]">
         
         {/* LEFT COLUMN: SOURCE & TERMINAL */}
-        <div className="flex-[7] flex flex-col gap-4 min-w-0 h-full">
+        <div className="flex-[7] flex flex-col gap-4 min-w-0 h-full ">
           
           {/* SOURCE PANEL */}
           <div className="flex-[6] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
