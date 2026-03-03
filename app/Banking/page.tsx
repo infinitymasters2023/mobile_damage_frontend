@@ -182,11 +182,11 @@ export default function EnterpriseOCR() {
           <div className="space-y-6 flex-grow">
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">OCR Profile</label>
-              <div className="relative group w-full">
+              <div className="relative group w-full mt-[5px]">
                 <select
                   value={engineProfile}
                   onChange={e => setEngineProfile(e.target.value)}
-                  className="w-full bg-[#050505] border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white outline-none cursor-pointer appearance-none"
+                  className="w-full bg-[#050505] border border-white/10  rounded-xl px-4 py-3 text-xs font-bold text-white outline-none cursor-pointer appearance-none"
                 >
                   <option>OCR to Cheque</option>
                   <option>OCR to Passbook</option>

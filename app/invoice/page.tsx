@@ -193,7 +193,7 @@ export default function EnterpriseOCR() {
           <div className="space-y-6 flex-grow">
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">OCR Profile</label>
-              <div className="relative">
+              <div className="relative mt-[10px]">
                 <select 
                   value={engineProfile} 
                   onChange={e => setEngineProfile(e.target.value)} 
