@@ -79,7 +79,7 @@ export default function EnterpriseOCR() {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans select-none overflow-x-hidden">
-      <Header title="Mobile Damage" />
+      <Header title="OCR Purchase Device" />
 
       {/* MAIN CONTENT GRID: Column on mobile, Row on LG desktop */}
       <main className="flex-grow flex flex-col mt-[70px] lg:mt-[10px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-64px-32px)]">
@@ -119,7 +119,8 @@ export default function EnterpriseOCR() {
                   {/* Creative Supported Formats Tag Cloud */}
                   <div className="flex flex-wrap justify-center gap-2 pt-2 opacity-40 mt-2">
                     {['PNG', 'WEBP', 'SVG', 'JPEG', 'PDF'].map((ext) => (
-                      <span key={ext} className="px-2 py-0.5 border border-white/20 rounded text-[9px] font-mono text-slate-300">
+                      <span key={ext}
+                        className="px-2 py-0.5 border border-white/20 rounded text-[9px] font-mono text-slate-300  transition-colors duration-200">
                         {ext}
                       </span>
                     ))}

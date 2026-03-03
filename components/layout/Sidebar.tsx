@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -13,27 +13,27 @@ import {
 const navItems = [
    { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
-  { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
- 
-  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },
-  { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_Purchase_Device" },
-
-  { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
+   { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" }, 
+   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },
+   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_purchase_device" },
+   { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedState = localStorage.getItem("sidebar-collapsed");
+      return savedState !== null ? JSON.parse(savedState) : false;
+    }
+    return false;
+  });
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // Persist collapse state & Handle initial mount
-  useEffect(() => {
-    const savedState = localStorage.getItem("sidebar-collapsed");
-    if (savedState !== null) {
-      setIsCollapsed(JSON.parse(savedState));
-    }
+  useLayoutEffect(() => {
     setIsMounted(true);
   }, []);
 
@@ -43,7 +43,9 @@ export default function Sidebar() {
     localStorage.setItem("sidebar-collapsed", JSON.stringify(newState));
   };
 
-  useEffect(() => { setIsMobileOpen(false); }, [pathname]);
+  useLayoutEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
 
   // Prevent Hydration mismatch
   if (!isMounted) return <div className="hidden lg:flex lg:w-64 h-screen bg-[#050505] border-r border-white/5" />;

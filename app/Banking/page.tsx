@@ -108,12 +108,22 @@ export default function EnterpriseOCR() {
                 </div>
               ) : (
                 <label onDragOver={e => e.preventDefault()} onDrop={handleUpload} className="group cursor-pointer flex flex-col items-center justify-center text-center w-full max-w-xl p-4 transition-all">
-                  <div className="p-4 rounded-2xl bg-blue-600 shadow-xl mb-4 group-hover:scale-110 transition-transform">
-                    <Upload className="text-white" size={24} />
+                  <div className="p-4 rounded-2xl bg-blue-600 shadow-xl mb-6 group-hover:scale-110 transition-transform">
+                    <Upload className="text-white" size={30} />
                   </div>
                   <h3 className="text-lg font-bold mb-2 text-white">Drop device assets here</h3>
-                  <p className="text-slate-500 text-xs px-4">Browse files for detection.</p>
+                  <p className="text-slate-500 text-sm text-center px-10 max-w-sm">
+                    Drag and drop file or <span className="text-blue-500 font-bold underline">browse files</span> for OCR detection.
+                  </p>
                   <input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
+                  {/* Creative Supported Formats Tag Cloud */}
+                  <div className="flex flex-wrap justify-center gap-2 pt-2 opacity-40 mt-2">
+                    {['PNG', 'WEBP', 'SVG', 'JPEG', 'PDF'].map((ext) => (
+                      <span key={ext} className="px-2 py-0.5 border border-white/20 rounded text-[9px] font-mono text-slate-300">
+                        {ext}
+                      </span>
+                    ))}
+                  </div>
                 </label>
               )}
             </div>
@@ -172,7 +182,7 @@ export default function EnterpriseOCR() {
                 <circle cx="96" cy="96" r="86" className="stroke-blue-600 fill-none transition-all duration-1000 ease-out"
                   strokeWidth="10" strokeDasharray={540} strokeDashoffset={540 - (540 * (active?.progress || 0)) / 100} strokeLinecap="round" />
               </svg>
-              <div className="flex flex-col items-center">
+              <div className="flex gap-2 flex-col items-center">
                 <span className="text-3xl md:text-5xl font-black text-white tracking-tighter">{active ? Math.floor(active.progress) : 0}%</span>
                 <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest">Accuracy</span>
               </div>
@@ -183,11 +193,7 @@ export default function EnterpriseOCR() {
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">OCR Profile</label>
               <div className="relative group w-full mt-[5px]">
-                <select
-                  value={engineProfile}
-                  onChange={e => setEngineProfile(e.target.value)}
-                  className="w-full bg-[#050505] border border-white/10  rounded-xl px-4 py-3 text-xs font-bold text-white outline-none cursor-pointer appearance-none"
-                >
+                <select value={engineProfile} onChange={e => setEngineProfile(e.target.value)} className="w-full bg-[#050505] border border-white/10  rounded-xl px-4 py-3 text-xs font-bold text-white outline-none cursor-pointer appearance-none">
                   <option>OCR to Cheque</option>
                   <option>OCR to Passbook</option>
                   <option>OCR Bank ID</option>
