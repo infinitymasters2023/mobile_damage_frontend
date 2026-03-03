@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png";
+import Footer from "@/components/layout/Footer";
 
 // 1. Unified API Protocol Configuration
 const PROTOCOLS = [
@@ -270,13 +271,7 @@ export default function EnterpriseOCR() {
         </aside>
       </main>
 
-      <footer className="h-8 border-t border-white/5 bg-black px-8 flex items-center justify-between text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em] shrink-0">
-        <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2"><ShieldCheck size={12} className="text-emerald-500" /> AES_256_ACTIVE</div>
-            <div className="flex items-center gap-2"><Globe size={12} /> GLOBAL_NODE_01</div>
-        </div>
-        <div className="text-[8px] opacity-40 italic">STABLE_CORE_V2.0.4</div>
-      </footer>
+     <Footer/>
 
       <style jsx global>{`
         @keyframes scan { 

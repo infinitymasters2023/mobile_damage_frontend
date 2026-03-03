@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
-
+import Footer from "@/components/layout/Footer";
 export interface UploadedImage {
   url: string;
   name: string;
@@ -216,17 +216,7 @@ export default function EnterpriseOCR() {
         </aside>
       </main>
 
-      <footer className="h-auto md:h-8 py-4 md:py-0 border-t border-white/5 bg-black px-4 md:px-8 flex flex-col md:flex-row items-center justify-between text-[9px] font-medium text-slate-500 gap-2">
-        <div className="flex items-center gap-3 uppercase tracking-widest text-center">
-          <span>&copy; 2026 INFINITY ASSURANCE</span>
-          <div className="flex items-center gap-1.5"><ShieldCheck size={10} className="text-emerald-500" /> SECURE</div>
-        </div>
-        <div className="hidden sm:flex gap-4 uppercase tracking-tighter">
-          <span>Latency: 142ms</span>
-          <span>AWS-MUM-1</span>
-        </div>
-      </footer>
-
+      <Footer/>
       <style jsx global>{`
         @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
         ::-webkit-scrollbar { width: 0px; }
