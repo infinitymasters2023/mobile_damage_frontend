@@ -100,7 +100,7 @@ export default function EnterpriseOCR() {
           <div className="flex-[6] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
             <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <FileText size={14} className="text-blue-500" /> Live Document Processing
+                <FileText size={14} className="text-blue-500" /> Live Document Processing 
               </span>
               <span className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-2 tracking-widest">
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> SOURCE

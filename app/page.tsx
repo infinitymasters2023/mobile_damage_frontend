@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, ChangeEvent, DragEvent } from "react";
-import { Bolt, Upload, ShieldCheck, AlertTriangle, Plus, Menu } from "lucide-react";
+import { Bolt, Upload, ShieldCheck, AlertTriangle, Plus, Menu, FileText } from "lucide-react";
 import Image, { StaticImageData } from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png";
 import Header from "@/components/layout/Header";
@@ -99,7 +99,7 @@ export default function MobileDamageAI() {
         <div className="flex-[7] flex flex-col gap-4 min-w-0">
           <div className="flex-[6] min-h-[400px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden relative">
             <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Visual Analysis</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"> <FileText size={14} className="text-blue-500" /> Visual Analysis </span>
               <span className="text-[10px] font-black text-blue-500 tracking-widest uppercase">● SOURCE_NODE</span>
             </div>
             

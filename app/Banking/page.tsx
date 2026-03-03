@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, Menu } from "lucide-react";
+import Image from "next/image";
+import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, Menu, FileText } from "lucide-react";
 import Header from "@/components/layout/Header";
 
 export interface UploadedImage {
@@ -89,7 +90,7 @@ export default function EnterpriseOCR() {
           {/* SOURCE PANEL: Added min-height for mobile visibility */}
           <div className="flex-[6] min-h-[350px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
             <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Live Document</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"> <FileText size={14} className="text-blue-500" /> Live Document</span>
               <span className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-2 tracking-widest">
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> SOURCE
               </span>
@@ -98,7 +99,7 @@ export default function EnterpriseOCR() {
             <div className="flex-grow flex items-center justify-center p-4 md:p-6 bg-black relative overflow-hidden">
               {active ? (
                 <div className="relative h-full w-full flex items-center justify-center">
-                  <img src={active.url} className="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-white/5" alt="source" />
+                  <Image src={active.url} width={500} height={500} className="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-white/5" alt="source" />
                   {active.status === "analyzing" && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="w-full h-0.5 bg-blue-500/40 absolute top-0 animate-[scan_3s_infinite_linear] shadow-[0_0_15px_#3b82f6]" />
