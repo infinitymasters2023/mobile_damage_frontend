@@ -188,14 +188,11 @@ export default function EnterpriseOCR() {
               </p>
               <div className="grid grid-cols-4 gap-2">
                 {images.slice(0, 4).map((img, idx) => (
-                  <div
-                    key={img.url}
-                    onClick={() => setActiveIndex(idx)}
-                    className={`aspect-square rounded-lg border-2 cursor-pointer relative overflow-hidden transition-all duration-300 ${activeIndex === idx
+                  <div key={img.url} onClick={() => setActiveIndex(idx)} 
+                      className={`aspect-square rounded-lg border-2 cursor-pointer relative overflow-hidden transition-all duration-300 ${activeIndex === idx
                       ? 'border-blue-500 scale-105 shadow-[0_0_15px_#3b82f666] z-10'
                       : 'border-white/5 opacity-40 hover:opacity-100'
-                      }`}
-                  >
+                      }`} >
                     <Image src={img.url} fill className="object-cover" alt="thumb" />
                   </div>
                 ))}
@@ -204,8 +201,8 @@ export default function EnterpriseOCR() {
                     <div className="w-1.5 h-1.5 bg-white/5 rounded-full" />
                   </div>
                 ))}
-              </div>
-
+              </div> 
+              
               <div className="mt-5">
                 <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl">
                   <Bolt size={16} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Extraction
@@ -215,7 +212,6 @@ export default function EnterpriseOCR() {
           </div>
         </aside>
       </main>
-
       <Footer/>
       <style jsx global>{`
         @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
