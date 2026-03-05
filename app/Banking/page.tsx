@@ -8,7 +8,6 @@ import {
 import Image from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png";
 
-// Configuration for your specific API routes
 const DOC_CONFIG = [
   { id: "cheque", label: "Cheque OCR", endpoint: "/cheque/upload" },
   { id: "payment_proff", label: "Payment Proof", endpoint: "/Payment-Proff/payment-receipt" },
@@ -23,8 +22,8 @@ interface Task {
   id: string;
   file: File;
   preview: string;
-  type: string; // The doc type (e.g., 'cheque')
-  mimeType: "image" | "pdf"; // For rendering logic
+  type: string;
+  mimeType: "image" | "pdf";
   status: "idle" | "uploading" | "processing" | "success" | "error";
   progress: number;
   result?: any;
@@ -37,42 +36,47 @@ export default function EnterpriseOCR() {
   const [selectedType, setSelectedType] = useState("cheque");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const activeTask = tasks.find(t => t.id === activeId) || tasks[tasks.length - 1];
+  // Focus the clicked task, or the latest one, or null
+  const activeTask = tasks.find(t => t.id === activeId) || (tasks.length > 0 ? tasks[tasks.length - 1] : null);
 
-  // Memory Cleanup
   useEffect(() => {
-    return () => tasks.forEach(t => URL.revokeObjectURL(t.preview));
+    return () => tasks.forEach(t => t.preview && URL.revokeObjectURL(t.preview));
   }, [tasks]);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const newFiles = Array.from(e.target.files).map(file => ({
+    
+    const newFiles: Task[] = Array.from(e.target.files).map(file => ({
       id: Math.random().toString(36).substring(7),
       file,
       preview: URL.createObjectURL(file),
       type: selectedType,
-      mimeType: file.type.includes("pdf") ? ("pdf" as const) : ("image" as const),
-      status: "idle" as const,
+      mimeType: file.type.includes("pdf") ? "pdf" : "image",
+      status: "idle",
       progress: 0,
     }));
+
     setTasks(prev => [...prev, ...newFiles]);
+    // Start processing each new task
     newFiles.forEach(processTask);
+    
+    // Reset input so the same file can be uploaded again if needed
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const processTask = async (task: Task) => {
     try {
-      // 1. Storage Phase (F: Drive)
       updateStatus(task.id, { status: "uploading", progress: 20 });
+      
       const fData = new FormData();
       fData.append("file", task.file);
       
       const res = await fetch("/api/upload", { method: "POST", body: fData });
-      const { virtualPath } = await res.json();
       if (!res.ok) throw new Error("F: Drive Storage Failed");
-
+      
+      const { virtualPath } = await res.json();
       updateStatus(task.id, { status: "processing", progress: 50, vPath: virtualPath });
 
-      // 2. Neural Extraction Phase
       const config = DOC_CONFIG.find(c => c.id === task.type);
       const ocrRes = await fetch(`${API_BASE}${config?.endpoint}`, {
         method: "POST",
@@ -119,7 +123,7 @@ export default function EnterpriseOCR() {
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="bg-transparent text-[10px] font-bold text-blue-500 uppercase tracking-tighter outline-none cursor-pointer pr-6 appearance-none"
               >
-                {DOC_CONFIG.map(c => <option key={c.id} value={c.id} className="bg-[#0a0a0a]">{c.label}</option>)}
+                {DOC_CONFIG.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
               </select>
               <ChevronDown size={10} className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" />
             </div>
@@ -148,7 +152,7 @@ export default function EnterpriseOCR() {
               <div 
                 key={task.id}
                 onClick={() => setActiveId(task.id)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${activeId === task.id ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)]' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
+                className={`p-4 rounded-xl border transition-all cursor-pointer ${activeId === task.id || (!activeId && tasks[tasks.length-1]?.id === task.id) ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)]' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -168,7 +172,7 @@ export default function EnterpriseOCR() {
         {/* WORKSPACE AREA */}
         <div className="flex-grow flex flex-col gap-6 overflow-hidden">
           
-          {/* VIEWPORT (PDF & IMAGE DUAL RENDER) */}
+          {/* VIEWPORT */}
           <div className="flex-[6] bg-[#070707] rounded-[2rem] border border-white/5 overflow-hidden relative shadow-inner">
             <div className="absolute top-6 left-6 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest">
               <FileSearch size={12} className="text-blue-500" /> Neural_Viewport
