@@ -6,29 +6,19 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Logo from "@/app/img/infinity-logo-164.png"; 
 import { 
-  CreditCard, Barcode, ShoppingBag, 
+  LayoutDashboard, CreditCard, Barcode, ShoppingBag, 
   FileText, Languages, ChevronLeft, ChevronRight, Menu, X, Smartphone 
 } from 'lucide-react';
 
-// 1. Define Types
-interface NavItem {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
-}
-
-interface SidebarLinkProps extends NavItem {
-  active: boolean;
-  isCollapsed: boolean;
-}
-
-const navItems: NavItem[] = [
+const navItems = [
    { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
-   { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
-   { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/ocr_purchase_device" }, 
-   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },  
-   { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
+  { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
+ 
+  { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },
+  { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/Ocr_Purchase_Device" },
+
+  { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
 ];
 
 export default function Sidebar() {
@@ -38,36 +28,25 @@ export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // 2. Handle Initial Mount and LocalStorage
+  // Persist collapse state & Handle initial mount
   useEffect(() => {
-    setIsMounted(true);
-    try {
-      const savedState = localStorage.getItem("sidebar-collapsed");
-      if (savedState !== null) {
-        // Cast as boolean to prevent type errors
-        setIsCollapsed(JSON.parse(savedState) as boolean);
-      }
-    } catch (e) {
-      console.error("Sidebar state error:", e);
+    const savedState = localStorage.getItem("sidebar-collapsed");
+    if (savedState !== null) {
+      setIsCollapsed(JSON.parse(savedState));
     }
+    setIsMounted(true);
   }, []);
-
-  // 3. Close mobile sidebar on route change
-  // We include setIsMobileOpen to satisfy exhaustive-deps linter
-  useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname, setIsMobileOpen]);
 
   const handleToggleCollapse = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
     localStorage.setItem("sidebar-collapsed", JSON.stringify(newState));
   };
-  
-  // Prevent Hydration mismatch: Render a shell until mounted
-  if (!isMounted) {
-    return <div className="hidden lg:flex lg:w-64 h-screen bg-[#050505] border-r border-white/5" />;
-  }
+
+  useEffect(() => { setIsMobileOpen(false); }, [pathname]);
+
+  // Prevent Hydration mismatch
+  if (!isMounted) return <div className="hidden lg:flex lg:w-64 h-screen bg-[#050505] border-r border-white/5" />;
 
   return (
     <>
@@ -140,13 +119,7 @@ export default function Sidebar() {
   );
 }
 
-// 3. Typed Props for SidebarLink
-interface SidebarLinkProps extends NavItem {
-  active: boolean;
-  isCollapsed: boolean;
-}
-
-function SidebarLink({ icon, label, href, active, isCollapsed }: SidebarLinkProps) {
+function SidebarLink({ icon, label, href, active, isCollapsed }: any) {
   return (
     <Link 
       href={href} 
