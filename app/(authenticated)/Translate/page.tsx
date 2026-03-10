@@ -76,7 +76,7 @@ export default function AudioTranslate() {
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
       <Header title="Audio Translate" />
-      <main className="flex-grow flex flex-col mt-[80px] lg:mt-[20px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-100px)]">
+      <main className="flex-grow flex flex-col mt-[80px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4">
         
         {/* LEFT COLUMN: AUTO-DETECTION UPLOAD */}
         <div className="flex-[7] flex flex-col gap-4 min-w-0">

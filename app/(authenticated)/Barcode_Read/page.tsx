@@ -34,7 +34,7 @@ export default function BarcodeReader() {
     setIsScanning(true);
     setScannedData(null);
     setProgress(0);
-    
+
     // Simulate Progress increment
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -48,7 +48,7 @@ export default function BarcodeReader() {
 
     // Simulate Neural Decoding
     await new Promise((r) => setTimeout(r, 3000));
-    
+
     const result: ScannedItem = {
       id: Math.random().toString(36).substr(2, 9).toUpperCase(),
       data: "8806095784168",
@@ -74,15 +74,15 @@ export default function BarcodeReader() {
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
       <Header title="Barcode Read" />
 
-      <main className="flex-grow flex flex-col mt-[80px] lg:mt-[20px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-100px)]">
-        
+      <main className="flex-grow flex flex-col mt-[80px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4 ">
+
         {/* LEFT COLUMN: VIEWFINDER & TERMINAL */}
         <div className="flex-[7] flex flex-col gap-4 min-w-0">
-          
+
           {/* SCANNER VIEWFINDER */}
           <div className="flex-[6] min-h-[400px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden relative shadow-2xl">
             <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"> 
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                 <Scan size={14} className="text-blue-500" /> Scanner Viewfinder
               </span>
               <div className="flex gap-1 items-center">
@@ -91,36 +91,44 @@ export default function BarcodeReader() {
               </div>
             </div>
 
-            <div className="flex-grow flex items-center justify-center p-8 bg-black relative overflow-hidden">
+            <div className="flex-grow flex items-center justify-center p-4 md:p-8 bg-black relative overflow-hidden min-h-[300px] md:min-h-[500px]">
               {image ? (
-                <div className="relative h-full w-full flex items-center justify-center">
-                  <Image src={image} fill className="object-contain opacity-70" alt="barcode source" />
-                  
+                /* 2. Ensure the wrapper fills the parent and stays centered */
+                <div className="relative h-full w-full max-w-4xl mx-auto flex items-center justify-center aspect-square md:aspect-video">
+                  <Image
+                    src={image}
+                    fill
+                    className="object-contain opacity-70"
+                    alt="barcode source"
+                    priority // Better for LCP performance
+                  />
+
                   {/* SCANNING LASER ANIMATION */}
                   {isScanning && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                      <div className="w-full h-[2px] bg-red-600 absolute animate-[scan_2s_infinite_linear] shadow-[0_0_15px_#dc2626] z-10" />
+                      {/* 3. Changed w-full to inset-x-0 to keep it pinned to edges during animation */}
+                      <div className="inset-x-0 h-[2px] bg-red-600 absolute animate-[scan_2s_infinite_linear] shadow-[0_0_15px_#dc2626] z-10" />
                       <div className="absolute inset-0 bg-red-900/10 animate-pulse" />
                     </div>
                   )}
-                  
-                  <button 
-                    onClick={() => { setImage(null); setScannedData(null); setProgress(0); }} 
-                    className="absolute top-4 right-4 p-2 bg-black/50 rounded-full hover:bg-red-500/20 text-white transition-all z-20"
-                  >
+
+                  <button
+                    onClick={() => { setImage(null); setScannedData(null); setProgress(0); }}
+                    className="absolute top-0 right-0 md:top-4 md:right-4 p-2 bg-black/50 rounded-full hover:bg-red-500/20 text-white transition-all z-20" >
                     <X size={16} />
                   </button>
                 </div>
               ) : (
-                <label className="group cursor-pointer flex flex-col items-center justify-center space-y-6">
-                  <div className="relative p-10 rounded-3xl border-2 border-dashed border-white/10 group-hover:border-blue-500/50 transition-all">
-                    <Barcode size={48} className="text-slate-700 group-hover:text-blue-500 transition-colors" />
-                    <div className="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-blue-500" />
-                    <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-blue-500" />
+                /* 4. Center the upload label and ensure it doesn't break layout */
+                <label className="group cursor-pointer flex flex-col items-center justify-center space-y-4 md:space-y-6 w-full">
+                  <div className="relative p-6 md:p-10 rounded-3xl border-2 border-dashed border-white/10 group-hover:border-blue-500/50 transition-all">
+                    <Barcode size={32} className="md:w-12 md:h-12 text-slate-700 group-hover:text-blue-500 transition-colors" />
+                    <div className="absolute -top-2 -left-2 w-4 h-4 md:w-6 md:h-6 border-t-2 border-l-2 border-blue-500" />
+                    <div className="absolute -bottom-2 -right-2 w-4 h-4 md:w-6 md:h-6 border-b-2 border-r-2 border-blue-500" />
                   </div>
-                  <div className="text-center">
-                    <h3 className="text-lg font-bold uppercase tracking-tight">Inject Barcode Asset</h3>
-                    <p className="text-slate-500 text-sm mt-1 px-8">Upload image for neural symbology detection</p>
+                  <div className="text-center px-4">
+                    <h3 className="text-base md:text-lg font-bold uppercase tracking-tight">Inject Barcode Asset</h3>
+                    <p className="text-slate-500 text-xs md:text-sm mt-1">Upload image for neural symbology detection</p>
                   </div>
                   <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
                 </label>
@@ -150,8 +158,8 @@ export default function BarcodeReader() {
                 <div className="flex items-center gap-3 opacity-20 italic h-full justify-center">
                   {isScanning ? (
                     <div className="flex flex-col items-center gap-2">
-                       <Loader2 className="animate-spin text-blue-500" size={20} />
-                       <span className="text-[10px] tracking-widest uppercase">Analyzing...</span>
+                      <Loader2 className="animate-spin text-blue-500" size={20} />
+                      <span className="text-[10px] tracking-widest uppercase">Analyzing...</span>
                     </div>
                   ) : <span>// Awaiting capture...</span>}
                 </div>
@@ -166,7 +174,7 @@ export default function BarcodeReader() {
             <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Session History</h3>
             <p className="text-[9px] text-slate-600 font-bold uppercase">Stored in volatile memory</p>
           </div>
-          
+
           <div className="flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
             {history.length > 0 ? (
               history.map((item) => (
@@ -188,20 +196,20 @@ export default function BarcodeReader() {
 
           {/* Corrected Confidence & Progress Area */}
           <div className="p-6 mt-auto border-t border-white/10 bg-white/[0.01] space-y-4">
-             <div className="flex justify-between items-end text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                <span>Inference Confidence</span>
-                <span className="text-blue-500">{Math.floor(progress)}%</span>
-             </div> 
-             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_8px_#2563eb]" 
-                  style={{ width: `${progress}%` }} 
-                />
-             </div>
+            <div className="flex justify-between items-end text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              <span>Inference Confidence</span>
+              <span className="text-blue-500">{Math.floor(progress)}%</span>
+            </div>
+            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_8px_#2563eb]"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
         </aside>
       </main>
-    <Footer/>
+      <Footer />
 
       <style jsx global>{`
         @keyframes scan {

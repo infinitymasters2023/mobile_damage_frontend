@@ -6,7 +6,7 @@ import {
   Loader2, Cpu, Activity, Database, CheckCircle2, AlertCircle, Play, File, ChevronDown
 } from "lucide-react";
 import Image from "next/image";
-import Logo from "@/app/img/infinity-logo-164.png";
+import Logo from "@/public/img/infyeazy_logo.svg";
 import Footer from "@/components/layout/Footer";
 
 // 1. Unified API Protocol Configuration
@@ -109,13 +109,14 @@ export default function EnterpriseOCR() {
   };
 
   return (
+    
     <div className="h-screen w-full flex flex-col bg-[#020202] text-slate-300 overflow-hidden font-sans selection:bg-blue-500/30">
       
       {/* HUD HEADER */}
       <header className="h-16 border-b border-white/5 bg-black/40 backdrop-blur-md flex items-center justify-between px-8 shrink-0 z-50">
         <div className="flex items-center gap-6">
-          <div className="bg-white p-1 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-            <Image src={Logo} alt="logo" width={80} height={18} className="h-4 object-contain" />
+          <div className="bg-white p-1.5 px-3 rounded-lg shadow-xl ">
+            <Image src={Logo} alt="logo" width={120} height={150} className="object-cover" priority  unoptimized  />
           </div>
           <div className="h-6 w-px bg-white/10" />
           

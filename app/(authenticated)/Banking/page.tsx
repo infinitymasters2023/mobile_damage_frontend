@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { 
-  Upload, X, CheckCircle2, AlertCircle, Loader2, 
-  Layers, FileJson, Cpu, ChevronDown, FileText, FileSearch 
+import {
+  Upload, X, CheckCircle2, AlertCircle, Loader2,
+  Layers, FileJson, Cpu, ChevronDown, FileText, FileSearch
 } from "lucide-react";
 import Image from "next/image";
-import Logo from "@/app/img/infinity-logo-164.png";
+import Logo from "@/public/img/infyeazy_logo.svg";
+import Footer from "@/components/layout/Footer";
 
 const DOC_CONFIG = [
   { id: "cheque", label: "Cheque OCR", endpoint: "/cheque/upload" },
@@ -45,7 +46,7 @@ export default function EnterpriseOCR() {
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    
+
     const newFiles: Task[] = Array.from(e.target.files).map(file => ({
       id: Math.random().toString(36).substring(7),
       file,
@@ -59,7 +60,7 @@ export default function EnterpriseOCR() {
     setTasks(prev => [...prev, ...newFiles]);
     // Start processing each new task
     newFiles.forEach(processTask);
-    
+
     // Reset input so the same file can be uploaded again if needed
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -67,13 +68,13 @@ export default function EnterpriseOCR() {
   const processTask = async (task: Task) => {
     try {
       updateStatus(task.id, { status: "uploading", progress: 20 });
-      
+
       const fData = new FormData();
       fData.append("file", task.file);
-      
+
       const res = await fetch("/api/upload", { method: "POST", body: fData });
       if (!res.ok) throw new Error("F: Drive Storage Failed");
-      
+
       const { virtualPath } = await res.json();
       updateStatus(task.id, { status: "processing", progress: 50, vPath: virtualPath });
 
@@ -105,21 +106,20 @@ export default function EnterpriseOCR() {
 
   return (
     <div className="h-screen w-full flex flex-col bg-[#020202] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden">
-      
+
       {/* HUD HEADER */}
       <header className="h-16 border-b border-white/5 bg-black/40 backdrop-blur-xl flex items-center justify-between px-8 shrink-0 z-50">
         <div className="flex items-center gap-8">
-          <div className="bg-white p-1 rounded shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-            <Image src={Logo} alt="Logo" width={80} height={18} className="h-4 object-contain" />
+          <div className="bg-white p-1.5 px-3 rounded-lg shadow-xl ">
+            <Image src={Logo} alt="Logo" width={120} height={150} className="object-cover" priority  unoptimized />
           </div>
-          
+
           <div className="flex items-center gap-2 bg-white/5 p-1 rounded-lg border border-white/10">
             <div className="px-3 flex items-center gap-2 border-r border-white/10 text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                <Cpu size={12} className="text-blue-500"/> Protocol:
+              <Cpu size={12} className="text-blue-500" /> Protocol:
             </div>
             <div className="relative group">
-              <select 
-                value={selectedType}
+              <select value={selectedType} 
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="bg-transparent text-[10px] font-bold text-blue-500 uppercase tracking-tighter outline-none cursor-pointer pr-6 appearance-none"
               >
@@ -130,7 +130,7 @@ export default function EnterpriseOCR() {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={() => fileInputRef.current?.click()}
           className="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] flex items-center gap-2"
         >
@@ -140,23 +140,23 @@ export default function EnterpriseOCR() {
       </header>
 
       <main className="flex-grow flex p-6 gap-6 overflow-hidden">
-        
+
         {/* LEFT QUEUE SIDEBAR */}
-        <aside className="w-80 flex flex-col gap-4 shrink-0 overflow-hidden">
-          <div className="flex items-center justify-between px-2 text-[10px] font-black uppercase text-slate-500 tracking-widest">
-            <span>Live Tasks</span>
+        <aside className="w-80 rounded-[1.5rem] border border-white/5 bg-[#0a0a0a] flex flex-col overflow-hidden shrink-0 shadow-2xl">
+          <div className="p-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em]">Live Tasks</span>
             <span className="bg-blue-500/10 text-blue-500 px-2 rounded-md">{tasks.length}</span>
           </div>
           <div className="flex-grow overflow-y-auto space-y-2 pr-2 scrollbar-hide">
             {tasks.map(task => (
-              <div 
+              <div
                 key={task.id}
                 onClick={() => setActiveId(task.id)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${activeId === task.id || (!activeId && tasks[tasks.length-1]?.id === task.id) ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)]' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
+                className={`p-4 rounded-xl border transition-all cursor-pointer ${activeId === task.id || (!activeId && tasks[tasks.length - 1]?.id === task.id) ? 'bg-blue-600/10 border-blue-500/40 shadow-[0_0_20px_rgba(59,130,246,0.1)]' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    {task.mimeType === 'pdf' ? <FileText size={14} className="text-orange-500"/> : <Layers size={14} className="text-blue-500"/>}
+                    {task.mimeType === 'pdf' ? <FileText size={14} className="text-orange-500" /> : <Layers size={14} className="text-blue-500" />}
                     <span className="text-[10px] font-mono text-slate-400 truncate w-24 uppercase">{task.file.name}</span>
                   </div>
                   {task.status === 'success' ? <CheckCircle2 size={14} className="text-emerald-500" /> : task.status === 'error' ? <AlertCircle size={14} className="text-red-500" /> : <Loader2 size={14} className="text-blue-500 animate-spin" />}
@@ -171,13 +171,13 @@ export default function EnterpriseOCR() {
 
         {/* WORKSPACE AREA */}
         <div className="flex-grow flex flex-col gap-6 overflow-hidden">
-          
+
           {/* VIEWPORT */}
           <div className="flex-[6] bg-[#070707] rounded-[2rem] border border-white/5 overflow-hidden relative shadow-inner">
             <div className="absolute top-6 left-6 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase tracking-widest">
               <FileSearch size={12} className="text-blue-500" /> Neural_Viewport
             </div>
-            
+
             <div className="flex-grow h-full flex items-center justify-center p-10">
               {activeTask ? (
                 <div className="relative w-full h-full flex items-center justify-center">
@@ -194,8 +194,8 @@ export default function EnterpriseOCR() {
                 </div>
               ) : (
                 <div className="text-center opacity-10 flex flex-col items-center gap-4 grayscale">
-                   <Layers size={80} strokeWidth={0.5} />
-                   <p className="text-[12px] font-black uppercase tracking-[0.4em]">Initialize Connection</p>
+                  <Layers size={80} strokeWidth={0.5} />
+                  <p className="text-[12px] font-black uppercase tracking-[0.4em]">Initialize Connection</p>
                 </div>
               )}
             </div>
@@ -214,7 +214,7 @@ export default function EnterpriseOCR() {
                 <pre className="animate-in fade-in slide-in-from-bottom-2 duration-500">{JSON.stringify(activeTask.result, null, 2)}</pre>
               ) : activeTask?.status === 'error' ? (
                 <div className="text-red-500 flex flex-col gap-2 uppercase text-[11px] font-black">
-                  <div className="flex items-center gap-2 underline tracking-tighter"><AlertCircle size={14}/> Critical Rejection</div>
+                  <div className="flex items-center gap-2 underline tracking-tighter"><AlertCircle size={14} /> Critical Rejection</div>
                   <div className="bg-red-500/10 p-4 border border-red-500/20 rounded-lg">{activeTask.result}</div>
                 </div>
               ) : (
@@ -227,6 +227,8 @@ export default function EnterpriseOCR() {
           </div>
         </div>
       </main>
+
+      <Footer />
 
       <style jsx global>{`
         @keyframes scan { 0% { top: 0% } 100% { top: 100% } }

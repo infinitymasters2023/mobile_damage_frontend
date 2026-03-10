@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import Logo from "@/app/img/infinity-logo-164.png"; 
+import Logo from "@/public/img/infyeazy_logo.svg";
 import { 
   CreditCard, Barcode, ShoppingBag, 
   FileText, Languages, ChevronLeft, ChevronRight, Menu, X, Smartphone 
