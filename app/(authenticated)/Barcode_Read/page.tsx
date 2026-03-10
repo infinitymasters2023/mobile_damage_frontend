@@ -72,6 +72,7 @@ export default function BarcodeReader() {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
+      
       <Header title="Barcode Read" />
 
       <main className="flex-grow flex flex-col mt-[80px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4 ">

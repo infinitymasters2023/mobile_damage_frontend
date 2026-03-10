@@ -79,6 +79,7 @@ export default function EnterpriseOCR() {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans select-none overflow-x-hidden">
+      
       <Header title="OCR Purchase Device" />
 
       <main className="flex-grow flex flex-col mt-[70px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4 ">
