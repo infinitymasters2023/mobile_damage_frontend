@@ -272,7 +272,7 @@ export default function EnterpriseOCR() {
         </aside>
       </main>
 
-     <Footer/>
+  
 
       <style jsx global>{`
         @keyframes scan { 

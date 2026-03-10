@@ -196,7 +196,7 @@ export default function AudioTranslate() {
           </div>
         </aside>
       </main>
-      <Footer/>
+    
     </div>
   );
 }

@@ -212,7 +212,7 @@ export default function EnterpriseOCR() {
           </div>
         </aside>
       </main>
-      <Footer/>
+
       <style jsx global>{`
         @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
         ::-webkit-scrollbar { width: 0px; }

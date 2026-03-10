@@ -209,8 +209,7 @@ export default function BarcodeReader() {
           </div>
         </aside>
       </main>
-      <Footer />
-
+    
       <style jsx global>{`
         @keyframes scan {
           0% { top: 0%; opacity: 0; }
