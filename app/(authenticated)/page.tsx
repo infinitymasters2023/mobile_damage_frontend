@@ -356,20 +356,7 @@ const NexusFullLanding = () => {
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
-      <footer className="py-10 border-t border-white/5 bg-black px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="bg-white p-1 px-3 rounded-lg shadow-lg">
-            <Image src={LOGO_PATH} alt="logo" width={100} height={35} unoptimized />
-          </div>
-          <div className="flex gap-10 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
-            <a href="#" className="hover:text-blue-500">Privacy</a>
-            <a href="#" className="hover:text-blue-500">Docs</a>
-            <a href="#" className="hover:text-blue-500">Security</a>
-          </div>
-          <p className="text-slate-800 text-[10px] font-bold tracking-widest uppercase italic">© 2026 NEXUS SYSTEMS GLOBAL.</p>
-        </div>
-      </footer>
+      
     </div>
   );
 };
