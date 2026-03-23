@@ -89,7 +89,7 @@ useEffect(() => {
         <div className="min-h-screen bg-[#020202] text-slate-300 font-sans selection:bg-blue-600/30 overflow-x-hidden scroll-smooth">
 
             {/* --- NAVIGATION --- */}
-            <nav className={`fixed top-0 left-0 right-0 w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-xl py-4 shadow-2xl' : 'py-8'}`}>
+            <nav className={`fixed top-0 bg-dark left-0 right-0 w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-dark backdrop-blur-xl py-4 shadow-2xl' : 'py-5'}`}>
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                     <Link href="/" className="bg-white p-1.5 px-4 rounded-lg flex items-center shadow-lg transition-transform active:scale-95">
                         <Image src={LOGO_PATH} alt="logo" width={110} height={35} priority unoptimized />
