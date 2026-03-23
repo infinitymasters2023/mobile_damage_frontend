@@ -15,10 +15,7 @@ export default function Header({ title }: HeaderProps) {
       <div className="flex items-center gap-6">
         
         {/* Logo Container - Wrapped in Link */}
-        <Link 
-          href="/dashboard" 
-          className="transition-all hover:opacity-80 active:scale-95 cursor-pointer"
-        >
+     
           <div className="bg-white p-1.5 px-3 rounded-lg shadow-xl">
             <Image 
               src={Logo} 
@@ -30,7 +27,7 @@ export default function Header({ title }: HeaderProps) {
               unoptimized
             />
           </div>
-        </Link>
+       
 
         {/* Vertical Divider */}
         <div className="h-6 w-[1px] bg-white/10" />

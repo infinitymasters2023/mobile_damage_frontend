@@ -13,7 +13,6 @@ export default function Layout({
         
         {/* SIDEBAR: Stays fixed on the left */}
        
-
         {/* CONTENT AREA: Wraps everything else */}
         <div className="flex flex-1 flex-col relative min-w-0">
           
