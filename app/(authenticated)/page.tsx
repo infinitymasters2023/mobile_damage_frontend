@@ -34,7 +34,7 @@ const NexusFullLanding = () => {
       title: "Visual AI Triage.",
       subtitle: "Insurance-Grade Assessment",
       desc: "NPU-powered real-time screen crack detection and hardware integrity scoring for automated claims.",
-      color: "from-red-600/20",
+      color: "from-blue-800/20",
       tag: "COMPUTER_VISION",
       btn: "START INSPECTION"
     },
@@ -42,7 +42,7 @@ const NexusFullLanding = () => {
       title: "Nexus Hardware.",
       subtitle: "Physical Kiosk Integration",
       desc: "Series-9 hardware built for low-latency local data extraction, POS handhelds, and audit tablets.",
-      color: "from-emerald-600/20",
+      color: "from-blue-400/20",
       tag: "HARDWARE_SERIES_9",
       btn: "VIEW DEVICES"
     }
@@ -88,95 +88,74 @@ const NexusFullLanding = () => {
   return (
     <div className="min-h-screen bg-[#020202] text-slate-300 font-sans selection:bg-blue-600/30 overflow-x-hidden scroll-smooth">
 
-      {/* --- ENTERPRISE HEADER DESIGN --- */}
-      <nav className={`w-full z-[100] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] 
-  ${scrolled
-          ? 'bg-black/90 backdrop-blur-xl py-3 shadow-2xl border-b border-white/5'
-          : 'bg-black/40 backdrop-blur-md py-6'
+  {/* --- SYNCHRONIZED NAVBAR --- */}
+      <nav className={`w-full z-[100] transition-all duration-1000 ease-in-out 
+        ${scrolled 
+          ? 'bg-black ' 
+          : `bg-gradient-to-b ${slides[currentSlide].color} to-transparent py-6 backdrop-blur-sm`
         }`}>
-
-        {/* Notice: using max-w-[1440px] or w-full px-12 to get that wide horizontal stretch */}
+        
         <div className="w-full max-w-[1600px] mx-auto px-8 md:px-12 flex justify-between items-center">
-
-          {/* LOGO - Fixed Left */}
+          
+          {/* LOGO */}
           <div className="flex-shrink-0">
             <Link href="/" className="bg-white p-2 px-4 rounded-xl flex items-center shadow-2xl transition-transform active:scale-95 group">
-              <Image
-                src={LOGO_PATH}
-                alt="logo"
-                width={130}
-                height={40}
-                priority
-                unoptimized
-                className="object-contain"
-              />
+              <Image src={LOGO_PATH} alt="logo" width={110} height={35} priority unoptimized />
             </Link>
           </div>
 
-          {/* NAVIGATION LINKS - Centered */}
+          {/* NAV LINKS */}
           <div className="hidden lg:flex items-center gap-12">
             {['Banking', 'Visual AI', 'Hardware', 'Audio'].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase().replace(' ', '')}`}
-                className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300"
+                className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400 hover:text-white transition-all duration-300"
               >
                 {item}
               </a>
             ))}
           </div>
 
-          {/* LOGIN BUTTON - Fixed Right */}
+          {/* LOGIN */}
           <div className="flex items-center gap-6">
             <Link
               href="/login"
-              className="group relative bg-[#1D61FF] hover:bg-[#3b82f6] px-10 py-3 rounded-full overflow-hidden transition-all duration-500 shadow-[0_0_25px_rgba(29,97,255,0.4)] hover:shadow-[0_0_35px_rgba(29,97,255,0.6)]"
+              className="group relative bg-[#1D61FF] hover:bg-[#3b82f6] px-10 py-2.5 rounded-full overflow-hidden transition-all duration-500 shadow-[0_0_20px_rgba(29,97,255,0.4)]"
             >
-              <span className="relative z-10 text-xs font-black text-white uppercase tracking-widest">
-                Login
-              </span>
-              {/* Subtle internal glow effect */}
+              <span className="relative z-10 text-xs font-black text-white uppercase tracking-widest">Login</span>
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             </Link>
-
-            {/* Mobile Menu Icon */}
-            <button className="lg:hidden text-white hover:text-blue-500 transition-colors">
-              <Menu size={28} />
-            </button>
           </div>
         </div>
       </nav>
 
-      {/* --- HERO BANNER SLIDER --- */}
-      <header className="relative h-screen min-h-[750px] w-full flex items-center justify-center overflow-hidden">
-        {/* Background Gradient Transition */}
+      {/* --- HERO BANNER --- */}
+      <header className="relative h-screen min-h-[750px]  w-full flex items-center justify-center overflow-hidden bg-[#02040a]">
+        
+        {/* Background Gradient Transition - Synced with Nav */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={`bg-${currentSlide}`}
+            key={`hero-bg-${currentSlide}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // 3 seconds for the background to fully blend into the next color
-            transition={{ duration: 3, ease: "linear" }}
-            className={`absolute inset-0 bg-gradient-to-b ${slides[currentSlide].color} to-transparent`}
+            transition={{ duration: 2.5, ease: "linear" }}
+            className={`absolute inset-0 bg-gradient-to-t ${slides[currentSlide].color} to-transparent`}
           />
         </AnimatePresence>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-            {/* LEFT SIDE: TEXT CONTENT */}
+            {/* LEFT SIDE: TEXT */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide}
-                initial={{ y: 40, opacity: 0 }}
+                initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -40, opacity: 0 }}
-                /* ADJUST DURATION HERE */
-                transition={{
-                  duration: 0.8, // Increase for a slower, cinematic feel (e.g., 1.2)
-                  ease: [0.22, 1, 0.36, 1] // This "cubic-bezier" creates a smooth deceleration
-                }}
+                exit={{ y: -30, opacity: 0 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
                   <Activity size={14} className="animate-pulse" /> {slides[currentSlide].tag}
@@ -187,92 +166,46 @@ const NexusFullLanding = () => {
                 <h2 className="text-xl md:text-2xl font-bold text-blue-500 mb-8 uppercase tracking-[0.2em]">
                   {slides[currentSlide].subtitle}
                 </h2>
-                <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-xl mx-auto lg:mx-0 leading-relaxed italic">
+                <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-xl leading-relaxed italic opacity-80">
                   &quot;{slides[currentSlide].desc}&quot;
                 </p>
-                <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                  <button className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all shadow-2xl shadow-blue-600/30 active:scale-95">
-                    {slides[currentSlide].btn} <ArrowRight size={18} />
-                  </button>
-                </div>
+                <button className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all shadow-2xl active:scale-95">
+                  {slides[currentSlide].btn} <ArrowRight size={18} />
+                </button>
               </motion.div>
             </AnimatePresence>
 
-            {/* RIGHT SIDE: ANIMATED OCR GRAPHIC */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`graphic-${currentSlide}`}
-                initial={{ scale: 0.8, opacity: 0, rotateY: 25 }}
-                animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                exit={{ scale: 1.2, opacity: 0, rotateY: -25 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="relative flex justify-center lg:justify-end perspective-1000"
-              >
-                {/* Main OCR Card Container */}
-                <div className="relative group w-full max-w-[420px] aspect-square bg-[#030816]/80 backdrop-blur-sm border border-blue-500/20 rounded-[4rem] flex flex-col items-center justify-center overflow-hidden shadow-[0_0_80px_rgba(37,99,235,0.15)]">
-
-                  {/* 1. Animated Scanning Line */}
+            {/* RIGHT SIDE: GRAPHIC */}
+            <div className="relative flex justify-center lg:justify-end perspective-1000">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`graphic-${currentSlide}`}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 1.1, opacity: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="relative group w-full max-w-[420px] aspect-square bg-[#030816]/80 backdrop-blur-sm border border-blue-500/20 rounded-[4rem] flex flex-col items-center justify-center overflow-hidden shadow-2xl"
+                >
                   <motion.div
                     animate={{ top: ["-10%", "110%", "-10%"] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                     className="absolute left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-blue-500 to-transparent z-20 shadow-[0_0_20px_rgba(37,99,235,1)] opacity-80"
                   />
-
-                  {/* 2. HUD Grid Overlay */}
-                  <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#1e40af_1px,transparent_1px),linear-gradient(to_bottom,#1e40af_1px,transparent_1px)] bg-[size:30px_30px]"></div>
-
-                  {/* 3. Dynamic Center Icon */}
-                  <div className="relative z-10 flex flex-col items-center">
-                    <motion.div
-                      animate={{
-                        y: [0, -15, 0],
-                        filter: ["drop-shadow(0 0 0px rgba(59,130,246,0))", "drop-shadow(0 0 20px rgba(59,130,246,0.5))", "drop-shadow(0 0 0px rgba(59,130,246,0))"]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      {currentSlide === 0 && <CreditCard size={140} strokeWidth={0.5} className="text-blue-500/60" />}
-                      {currentSlide === 1 && <Smartphone size={140} strokeWidth={0.5} className="text-red-500/60" />}
-                      {currentSlide === 2 && <Box size={140} strokeWidth={0.5} className="text-emerald-500/60" />}
-                    </motion.div>
-
-                    {/* 4. "Verified" Badge inside graphic */}
-                    <motion.div
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className={`mt-10 px-8 py-2.5 rounded-full text-white text-[10px] font-black tracking-[0.4em] shadow-2xl border border-white/10
-                                    ${currentSlide === 0 ? 'bg-blue-600' : currentSlide === 1 ? 'bg-red-600' : 'bg-emerald-600'}`}
-                    >
-                      {slides[currentSlide].tag}_DEPLOYED
-                    </motion.div>
+                  <div className="relative z-10 flex flex-col items-center opacity-40">
+                      {currentSlide === 0 && <CreditCard size={140} strokeWidth={0.5} className="text-blue-500" />}
+                      {currentSlide === 1 && <Smartphone size={140} strokeWidth={0.5} className="text-red-500" />}
+                      {currentSlide === 2 && <Box size={140} strokeWidth={0.5} className="text-emerald-500" />}
                   </div>
-
-                  {/* 5. Animated Pulse Rings */}
-                  <div className="absolute w-[80%] h-[80%] border border-blue-500/5 rounded-full animate-[ping_3s_linear_infinite]" />
-                  <div className="absolute w-[60%] h-[60%] border border-blue-500/10 rounded-full animate-[pulse_2s_linear_infinite]" />
-
-                  {/* Decorative Corner Brackets */}
-                  <div className="absolute top-8 left-8 w-6 h-6 border-t-2 border-l-2 border-blue-500/30 rounded-tl-xl" />
-                  <div className="absolute top-8 right-8 w-6 h-6 border-t-2 border-r-2 border-blue-500/30 rounded-tr-xl" />
-                  <div className="absolute bottom-8 left-8 w-6 h-6 border-b-2 border-l-2 border-blue-500/30 rounded-bl-xl" />
-                  <div className="absolute bottom-8 right-8 w-6 h-6 border-b-2 border-r-2 border-blue-500/30 rounded-br-xl" />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
-        {/* Slider Controls (Bottom Right) */}
-        <div className="absolute bottom-12 right-6 md:right-80 flex gap-4 z-20">
-          <button onClick={() => setCurrentSlide(prev => (prev === 0 ? slides.length - 1 : prev - 1))} className="p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 text-white transition-all"><ChevronLeft size={24} /></button>
-          <button onClick={() => setCurrentSlide(prev => (prev + 1) % slides.length)} className="p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 text-white transition-all"><ChevronRight size={24} /></button>
-        </div>
-
-        {/* Progress Bars (Bottom Left) */}
-        <div className="absolute bottom-12 left-6 md:left-80 flex items-center gap-3 z-20">
-          {slides.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${i === currentSlide ? 'w-20 bg-blue-600' : 'w-8 bg-white/10'}`} />
-          ))}
+        {/* Slider Navigation Controls */}
+        <div className="absolute bottom-12 right-80 flex gap-4 z-20 ">
+          <button onClick={() => setCurrentSlide(prev => (prev === 0 ? 2 : prev - 1))} className="p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 text-white transition-all"><ChevronLeft size={24} /></button>
+          <button onClick={() => setCurrentSlide(prev => (prev + 1) % 3)} className="p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 text-white transition-all"><ChevronRight size={24} /></button>
         </div>
       </header>
 
