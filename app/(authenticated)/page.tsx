@@ -1,240 +1,115 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { Bolt, Copy, Upload, ShieldCheck, CheckSquare, Menu, FileText } from "lucide-react";
-import Header from "@/components/layout/Header";
+import Link from "next/link";
+import Image from "next/image"; // 1. Added this import
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Loader2, ShieldCheck, Lock } from "lucide-react";
 
-export interface UploadedImage {
-  url: string;
-  name: string;
-  status?: "analyzing" | "completed" | "failed";
-  progress: number;
-  extractedData: Record<string, string>;
-}
+// 2. Removed the broken "import {Logo}..." line completely
 
-export default function EnterpriseOCR() {
-  const [images, setImages] = useState<UploadedImage[]>([]);
-  const [engineProfile, setEngineProfile] = useState("Ocr to Cheque");
-  const [termCopied, setTermCopied] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+export default function LandingPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent) => {
-    let files: File[] = [];
-    if ('files' in e.target && e.target.files) {
-      files = Array.from(e.target.files);
-    } else if ('dataTransfer' in e) {
-      e.preventDefault();
-      files = Array.from(e.dataTransfer.files);
-    }
-    if (files.length === 0) return;
-
-    const newImg: UploadedImage = {
-      url: URL.createObjectURL(files[0]),
-      name: files[0].name,
-      status: "analyzing",
-      progress: 0,
-      extractedData: {}
-    };
-
-    setImages([newImg]);
-    analyzeDocument(newImg.url);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    await new Promise((r) => setTimeout(r, 1500));
+    router.push("/mobile_damage"); 
   };
-
-  
-
-  const analyzeDocument = async (imgUrl: string) => {
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += Math.random() * 18;
-      if (currentProgress >= 100) {
-        currentProgress = 100;
-        clearInterval(interval);
-      }
-      setImages(prev => prev.map(img => img.url === imgUrl ? { ...img, progress: currentProgress } : img));
-    }, 400);
-
-    await new Promise(r => setTimeout(r, 3200));
-    setImages(prev => prev.map(img => img.url === imgUrl ? {
-      ...img,
-      status: "completed",
-      progress: 100,
-      extractedData: {
-        "ACCOUNT NO": "371166548523",
-        "IFSC CODE": "CORE0007637",
-        "HOLDER NAME": "ADMIN_USER_56",
-        "BANK NAME": "CORE GLOBAL SYSTEMS",
-        "LATEST TRANSACTION": "-$167.70",
-        "TOTAL BALANCE": "$5701.82"
-      }
-    } : img));
-  };
-
-  const handleCopyTerminal = () => {
-    if (!active || active.status !== "completed") return;
-    const dataString = JSON.stringify(active.extractedData, null, 2);
-    navigator.clipboard.writeText(dataString);
-    setTermCopied(true);
-    setTimeout(() => setTermCopied(false), 2000);
-  };
-
-  const active = images[0] || null;
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans select-none overflow-x-hidden">
-      <Header title="Mobile Damage" />
+    <div className="min-h-screen bg-[#020202] flex flex-col items-center justify-center relative overflow-hidden text-slate-300 font-sans w-full">
+      
+      {/* Background HUD Elements */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-500/5 blur-[100px]" />
+      </div>
 
-      {/* MAIN CONTENT GRID: Column on mobile, Row on LG desktop */}
-      <main className="flex-grow flex flex-col mt-[70px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4 lg:h-[calc(100vh-64px-32px)]">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" />
 
-        {/* LEFT COLUMN: SOURCE & TERMINAL */}
-        <div className="flex-[7] flex flex-col gap-4 min-w-0">
+        <motion.div 
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          className="w-full max-w-md p-8 bg-[#0a0a0a] border border-white/10 rounded-[2rem] shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] z-10 relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent opacity-50" />
 
-          {/* SOURCE PANEL: Added min-height for mobile visibility */}
-          <div className="flex-[6] min-h-[350px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl relative">
-            <div className="p-3 border-b border-white/10 flex justify-between items-center px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"> <FileText size={14} className="text-blue-500" /> Live Document</span>
-              <span className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-2 tracking-widest">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> SOURCE
-              </span>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-white border border-blue-500/20 mb-4">
+              
+              {/* 3. Using the direct path string for the logo */}
+              <Image 
+                src="/img/infyeazy_logo.svg" 
+                alt="logo" 
+                width={120} 
+                height={40} // Adjusted height for better aspect ratio
+                className="object-contain" 
+                priority 
+              />
+            </div>
+            
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">
+              Enterprise Document Intelligence
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Username</label>
+              <input 
+                type="text" 
+                required
+                disabled={isLoading}
+                className="w-full px-4 py-3.5 bg-black border border-white/5 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all text-white placeholder-slate-700 font-mono text-sm"
+                placeholder="USERNAME_ROOT"
+              />
             </div>
 
-            <div className="flex-grow flex items-center justify-center p-4 md:p-6 bg-black relative overflow-hidden">
-              {active ? (
-                <div className="relative h-full w-full flex items-center justify-center">
-                  <Image src={active.url} width={500} height={500} className="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-white/5" alt="source" />
-                  {active.status === "analyzing" && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-full h-0.5 bg-blue-500/40 absolute top-0 animate-[scan_3s_infinite_linear] shadow-[0_0_15px_#3b82f6]" />
-                    </div>
-                  )}
-                </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center ml-1">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Password</label>
+                <Link href="#" className="text-[9px] font-bold text-blue-500 hover:underline uppercase tracking-tighter opacity-50">Forget Password</Link>
+              </div>
+              <input 
+                type="password" 
+                required
+                disabled={isLoading}
+                className="w-full px-4 py-3.5 bg-black border border-white/5 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all text-white placeholder-slate-700 font-mono text-sm"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button 
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900 text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Login...
+                </>
               ) : (
-                <label onDragOver={e => e.preventDefault()} onDrop={handleUpload} className="group cursor-pointer flex flex-col items-center justify-center text-center w-full max-w-xl p-4 transition-all">
-                  <div className="p-4 rounded-2xl bg-blue-600 shadow-xl mb-6 group-hover:scale-110 transition-transform">
-                    <Upload className="text-white" size={30} />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2 text-white">Drop device assets here</h3>
-                  <p className="text-slate-500 text-sm text-center px-10 max-w-sm">
-                    Drag and drop file or <span className="text-blue-500 font-bold underline">browse files</span> for OCR detection.
-                  </p>
-                  <input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
-                  {/* Creative Supported Formats Tag Cloud */}
-                  <div className="flex flex-wrap justify-center gap-2 pt-2 opacity-40 mt-2">
-                    {['PNG', 'WEBP', 'SVG', 'JPEG', 'PDF'].map((ext) => (
-                      <span key={ext} className="px-2 py-0.5 border border-white/20 rounded text-[9px] font-mono text-slate-300">
-                        {ext}
-                      </span>
-                    ))}
-                  </div>
-                </label>
+                <>
+                  <Lock size={14} />
+                  Login
+                </>
               )}
-            </div>
-          </div>
-
-          {/* TERMINAL PANEL */}
-          <div className="flex-[4] min-h-[250px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-3 border-b border-white/10 flex justify-between items-center px-4 md:px-6 bg-white/[0.02]">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Terminal</span>
-              <div className="flex items-center gap-3 md:gap-5">
-                <button
-                  onClick={handleCopyTerminal}
-                  disabled={active?.status !== 'completed'}
-                  className="flex items-center gap-2 text-[9px] font-black uppercase text-slate-400 hover:text-emerald-500 transition-colors disabled:opacity-20"
-                >
-                  {termCopied ? <CheckSquare size={12} /> : <Copy size={12} />}
-                  <span className="hidden xs:inline">{termCopied ? "Copied" : "Copy Data"}</span>
-                </button>
-                <span className="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-2 tracking-widest border-l border-white/10 pl-3 md:pl-5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> <span className="hidden xs:inline">LIVE FEED</span>
-                </span>
-              </div>
-            </div>
-            <div className="flex-grow bg-[#050505] p-4 md:p-6 font-mono text-[12px] text-emerald-500 overflow-y-auto leading-relaxed scrollbar-hide">
-              {active?.status === "completed" ? (
-                <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
-                  <p className="mb-4 font-black">[SUCCESS] AI Extraction Complete:</p>
-                  <div className="space-y-2">
-                    {Object.entries(active.extractedData).map(([key, val]) => (
-                      <div key={key} className="flex flex-col sm:flex-row sm:gap-4 border-b border-white/5 pb-1 sm:border-0">
-                        <span className="opacity-50 text-[10px] sm:min-w-[140px] uppercase">{key} :</span>
-                        <span className="font-bold text-white break-all">{val}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="h-full flex items-center justify-center opacity-30">
-                  <p className="animate-pulse tracking-[0.2em] text-[10px] uppercase">{"// Awaiting Engine..."}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT SIDEBAR: Becomes a card on mobile */}
-        <aside className="flex-[3] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col p-6 md:p-8 overflow-hidden min-w-full lg:min-w-[340px] shadow-2xl relative">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-[80px] -z-10" />
-          <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8 text-center">Analysis</h3>
-
-          {/* CONFIDENCE ORB: Scaled for mobile */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="relative w-36 h-36 md:w-48 md:h-48 flex items-center justify-center">
-              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 192 192">
-                <circle cx="96" cy="96" r="86" className="stroke-white/5 fill-none" strokeWidth="10" />
-                <circle cx="96" cy="96" r="86" className="stroke-blue-600 fill-none transition-all duration-1000 ease-out"
-                  strokeWidth="10" strokeDasharray={540} strokeDashoffset={540 - (540 * (active?.progress || 0)) / 100} strokeLinecap="round" />
-              </svg>
-              <div className="flex gap-2 flex-col items-center">
-                <span className="text-3xl md:text-5xl font-black text-white tracking-tighter">{active ? Math.floor(active.progress) : 0}%</span>
-                <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest">Accuracy</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6 flex-grow">
-            {/* High-Tech Image Queue */}
-            <div className="relative p-4 rounded-xl  backdrop-blur-sm group mb-6">
-              <p className="text-[10px] font-bold text-slate-500 uppercase mb-4 tracking-widest flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> Pipeline Queue
-              </p>
-              <div className="grid grid-cols-4 gap-2">
-                {images.slice(0, 4).map((img, idx) => (
-                  <div
-                    key={img.url}
-                    onClick={() => setActiveIndex(idx)}
-                    className={`aspect-square rounded-lg border-2 cursor-pointer relative overflow-hidden transition-all duration-300 ${activeIndex === idx
-                        ? 'border-blue-500 scale-105 shadow-[0_0_15px_#3b82f666] z-10'
-                        : 'border-white/5 opacity-40 hover:opacity-100'
-                      }`} >
-                    <Image src={img.url} fill className="object-cover" alt="thumb" />
-                  </div>
-                ))}
-                {/* Placeholder slots for empty grid */}
-                {Array.from({ length: Math.max(0, 1 - images.length) }).map((_, i) => (
-                  <div key={i} className="aspect-square rounded-lg border border-dashed border-white/10 bg-white/[0.01] flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 bg-white/5 rounded-full" />
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5">
-                 <button onClick={() => active && analyzeDocument(active.url)} disabled={!active || active.status === 'analyzing'} className="w-full py-4 bg-blue-600 rounded-xl flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 active:scale-[0.98] disabled:opacity-30 transition-all shadow-xl">
-              <Bolt size={16} className={active?.status === 'analyzing' ? 'animate-spin' : ''} /> Extraction
             </button>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </main>
+          </form>
 
-     
-      <style jsx global>{`
-        @keyframes scan { 0% { top: 0% } 100% { top: 100% } }
-        ::-webkit-scrollbar { width: 0px; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-      `}</style>
+          <div className="mt-8 pt-6 border-t border-white/5 text-center">
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+              New registered ? <Link href="/signup" className="text-blue-500 hover:text-blue-400">Sign up</Link>
+            </p>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }

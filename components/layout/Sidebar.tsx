@@ -23,7 +23,7 @@ interface SidebarLinkProps extends NavItem {
 }
 
 const navItems: NavItem[] = [
-   { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/" },
+   { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/mobile_damage" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
    { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
    { icon: <ShoppingBag size={20} />, label: "OCR Purchase Device", href: "/ocr_purchase_device" }, 
@@ -40,6 +40,7 @@ export default function Sidebar() {
 
   // 2. Handle Initial Mount and LocalStorage
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
     try {
       const savedState = localStorage.getItem("sidebar-collapsed");
@@ -55,6 +56,7 @@ export default function Sidebar() {
   // 3. Close mobile sidebar on route change
   // We include setIsMobileOpen to satisfy exhaustive-deps linter
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMobileOpen(false);
   }, [pathname, setIsMobileOpen]);
 

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { Barcode, Scan, Copy, CheckSquare, Upload, X, Database, Zap, Loader2 } from "lucide-react";
+import { Barcode, Scan, Copy, CheckSquare, X, Database, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Sidebar from "@/components/layout/Sidebar";
 
 interface ScannedItem {
   id: string;
@@ -19,7 +19,7 @@ export default function BarcodeReader() {
   const [scannedData, setScannedData] = useState<ScannedItem | null>(null);
   const [history, setHistory] = useState<ScannedItem[]>([]);
   const [copied, setCopied] = useState(false);
-  const [progress, setProgress] = useState(0); // Added missing state
+  const [progress, setProgress] = useState(0);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,7 +35,6 @@ export default function BarcodeReader() {
     setScannedData(null);
     setProgress(0);
 
-    // Simulate Progress increment
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -46,11 +45,10 @@ export default function BarcodeReader() {
       });
     }, 300);
 
-    // Simulate Neural Decoding
     await new Promise((r) => setTimeout(r, 3000));
 
     const result: ScannedItem = {
-      id: Math.random().toString(36).substr(2, 9).toUpperCase(),
+      id: Math.random().toString(36).substring(2, 11).toUpperCase(),
       data: "8806095784168",
       type: "EAN_13 / BARCODE",
       timestamp: new Date().toLocaleTimeString()
@@ -71,154 +69,156 @@ export default function BarcodeReader() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
-      
-      <Header title="Barcode Read" />
+    <div className="flex h-screen w-full bg-[#050505] text-white font-sans overflow-hidden">
+      <Sidebar />
 
-      <main className="flex-grow flex flex-col mt-[80px] lg:mt-[0px] lg:flex-row p-3 md:p-4 gap-4 ">
+      <div className="flex flex-col flex-grow min-w-0">
+        <Header title="Barcode Read" />
 
-        {/* LEFT COLUMN: VIEWFINDER & TERMINAL */}
-        <div className="flex-[7] flex flex-col gap-4 min-w-0">
+        <main className="flex-grow flex flex-col lg:flex-row p-3 md:p-4 gap-4 overflow-y-auto lg:overflow-hidden">
+          
+          {/* LEFT COLUMN: VIEWFINDER & TERMINAL */}
+          <div className="flex-[7] flex flex-col gap-4 min-w-0 lg:h-full">
 
-          {/* SCANNER VIEWFINDER */}
-          <div className="flex-[6] min-h-[400px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden relative shadow-2xl">
-            <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Scan size={14} className="text-blue-500" /> Scanner Viewfinder
-              </span>
-              <div className="flex gap-1 items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-[9px] font-black text-red-500 uppercase tracking-tighter">Live_Rec</span>
+            {/* SCANNER VIEWFINDER */}
+            <div className="flex-[6] min-h-[400px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden relative shadow-2xl">
+              <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center shrink-0">
+                <span className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <Scan size={14} className="text-blue-500" /> Scanner Viewfinder
+                </span>
+                <div className="flex gap-2 items-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]" />
+                  <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">Live_Rec</span>
+                </div>
+              </div>
+
+              <div className="flex-grow flex items-center justify-center p-4 bg-black relative overflow-hidden">
+                {image ? (
+                  <div className="relative h-full w-full max-w-4xl mx-auto flex items-center justify-center">
+                    <Image
+                      src={image}
+                      fill
+                      className="object-contain opacity-70 transition-opacity duration-500"
+                      alt="barcode source"
+                      priority
+                    />
+
+                    {/* SCANNING LASER ANIMATION */}
+                    {isScanning && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-10">
+                        <div className="absolute inset-x-0 h-[2px] bg-red-600 animate-[scan_2s_infinite_linear] shadow-[0_0_20px_#dc2626]" />
+                        <div className="absolute inset-0 bg-red-900/5 animate-pulse" />
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => { setImage(null); setScannedData(null); setProgress(0); }}
+                      className="absolute top-2 right-2 p-2 bg-black/60 rounded-full hover:bg-red-500/40 text-white transition-all z-20" >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="group cursor-pointer flex flex-col items-center justify-center space-y-4 w-full h-full">
+                    <div className="relative p-8 md:p-12 rounded-3xl border-2 border-dashed border-white/10 group-hover:border-blue-500/40 transition-all duration-500">
+                      <Barcode size={40} className="text-slate-700 group-hover:text-blue-500 transition-colors duration-500" />
+                      {/* Industrial Corners */}
+                      <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-blue-500/50" />
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-blue-500/50" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-sm md:text-base font-bold uppercase tracking-widest">Inject Barcode Asset</h3>
+                      <p className="text-slate-500 text-[10px] md:text-xs mt-1">Neural Symbology Detection Engine</p>
+                    </div>
+                    <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
+                  </label>
+                )}
               </div>
             </div>
 
-            <div className="flex-grow flex items-center justify-center p-4 md:p-8 bg-black relative overflow-hidden min-h-[300px] md:min-h-[500px]">
-              {image ? (
-                /* 2. Ensure the wrapper fills the parent and stays centered */
-                <div className="relative h-full w-full max-w-4xl mx-auto flex items-center justify-center aspect-square md:aspect-video">
-                  <Image
-                    src={image}
-                    fill
-                    className="object-contain opacity-70"
-                    alt="barcode source"
-                    priority // Better for LCP performance
-                  />
-
-                  {/* SCANNING LASER ANIMATION */}
-                  {isScanning && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                      {/* 3. Changed w-full to inset-x-0 to keep it pinned to edges during animation */}
-                      <div className="inset-x-0 h-[2px] bg-red-600 absolute animate-[scan_2s_infinite_linear] shadow-[0_0_15px_#dc2626] z-10" />
-                      <div className="absolute inset-0 bg-red-900/10 animate-pulse" />
-                    </div>
-                  )}
-
-                  <button
-                    onClick={() => { setImage(null); setScannedData(null); setProgress(0); }}
-                    className="absolute top-0 right-0 md:top-4 md:right-4 p-2 bg-black/50 rounded-full hover:bg-red-500/20 text-white transition-all z-20" >
-                    <X size={16} />
+            {/* DECODER TERMINAL */}
+            <div className="flex-[3] min-h-[200px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden">
+              <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center shrink-0">
+                <span className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest">Decoder Terminal</span>
+                {scannedData && (
+                  <button onClick={handleCopy} className="text-emerald-500 hover:text-emerald-400 transition-colors">
+                    {copied ? <CheckSquare size={16} /> : <Copy size={16} />}
                   </button>
-                </div>
-              ) : (
-                /* 4. Center the upload label and ensure it doesn't break layout */
-                <label className="group cursor-pointer flex flex-col items-center justify-center space-y-4 md:space-y-6 w-full">
-                  <div className="relative p-6 md:p-10 rounded-3xl border-2 border-dashed border-white/10 group-hover:border-blue-500/50 transition-all">
-                    <Barcode size={32} className="md:w-12 md:h-12 text-slate-700 group-hover:text-blue-500 transition-colors" />
-                    <div className="absolute -top-2 -left-2 w-4 h-4 md:w-6 md:h-6 border-t-2 border-l-2 border-blue-500" />
-                    <div className="absolute -bottom-2 -right-2 w-4 h-4 md:w-6 md:h-6 border-b-2 border-r-2 border-blue-500" />
-                  </div>
-                  <div className="text-center px-4">
-                    <h3 className="text-base md:text-lg font-bold uppercase tracking-tight">Inject Barcode Asset</h3>
-                    <p className="text-slate-500 text-xs md:text-sm mt-1">Upload image for neural symbology detection</p>
-                  </div>
-                  <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
-                </label>
-              )}
-            </div>
-          </div>
-
-          {/* DECODER TERMINAL */}
-          <div className="flex-[3] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden">
-            <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Symbology Decoder</span>
-              {scannedData && (
-                <button onClick={handleCopy} className="text-emerald-500 hover:text-emerald-400 transition-colors">
-                  {copied ? <CheckSquare size={16} /> : <Copy size={16} />}
-                </button>
-              )}
-            </div>
-            <div className="flex-grow bg-[#050505] p-6 font-mono text-[13px] text-emerald-500">
-              {scannedData ? (
-                <div className="space-y-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                  <p><span className="opacity-40">STATUS:</span> SUCCESS_DECODE</p>
-                  <p><span className="opacity-40">FORMAT:</span> {scannedData.type}</p>
-                  <p><span className="opacity-40">STRING:</span> <span className="text-white font-bold">{scannedData.data}</span></p>
-                  <p><span className="opacity-40">HASH_ID:</span> {scannedData.id}</p>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3 opacity-20 italic h-full justify-center">
-                  {isScanning ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="animate-spin text-blue-500" size={20} />
-                      <span className="text-[10px] tracking-widest uppercase">Analyzing...</span>
-                    </div>
-                  ) : <span>// Awaiting capture...</span>}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT SIDEBAR: SCAN HISTORY */}
-        <aside className="flex-[3] rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl lg:min-w-[340px]">
-          <div className="p-6 border-b border-white/10">
-            <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Session History</h3>
-            <p className="text-[9px] text-slate-600 font-bold uppercase">Stored in volatile memory</p>
-          </div>
-
-          <div className="flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
-            {history.length > 0 ? (
-              history.map((item) => (
-                <div key={item.id} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all group animate-in slide-in-from-right-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-[10px] font-bold text-blue-500">{item.type}</span>
-                    <span className="text-[9px] text-slate-600">{item.timestamp}</span>
-                  </div>
-                  <p className="text-sm font-mono font-bold tracking-wider text-slate-200 truncate">{item.data}</p>
-                </div>
-              ))
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center opacity-10 space-y-4">
-                <Database size={40} />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-center px-12">No data packets detected</p>
+                )}
               </div>
-            )}
+              <div className="flex-grow bg-[#050505] p-6 font-mono text-[12px] md:text-[13px] text-emerald-500 overflow-y-auto scrollbar-hide">
+                {scannedData ? (
+                  <div className="space-y-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <p><span className="opacity-40">STATUS:</span> SUCCESS_DECODE</p>
+                    <p><span className="opacity-40">FORMAT:</span> {scannedData.type}</p>
+                    <p><span className="opacity-40">STRING:</span> <span className="text-white font-bold">{scannedData.data}</span></p>
+                    <p><span className="opacity-40">HASH_ID:</span> {scannedData.id}</p>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 opacity-20 italic h-full justify-center">
+                    {isScanning ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="animate-spin text-blue-500" size={20} />
+                        <span className="text-[10px] tracking-widest uppercase not-italic">Decoding...</span>
+                      </div>
+                    ) : <span>// Awaiting capture stream...</span>}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Corrected Confidence & Progress Area */}
-          <div className="p-6 mt-auto border-t border-white/10 bg-white/[0.01] space-y-4">
-            <div className="flex justify-between items-end text-[10px] font-black text-slate-500 uppercase tracking-widest">
-              <span>Inference Confidence</span>
-              <span className="text-blue-500">{Math.floor(progress)}%</span>
+          {/* RIGHT SIDEBAR: SCAN HISTORY */}
+          <aside className="lg:w-[350px] shrink-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden shadow-2xl lg:h-full">
+            <div className="p-6 border-b border-white/10 shrink-0">
+              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Session History</h3>
+              <p className="text-[9px] text-slate-600 font-bold uppercase tracking-tighter">Stored in Volatile Memory</p>
             </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_8px_#2563eb]"
-                style={{ width: `${progress}%` }}
-              />
+
+            <div className="flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
+              {history.length > 0 ? (
+                history.map((item) => (
+                  <div key={item.id} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all group animate-in slide-in-from-right-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[10px] font-bold text-blue-500">{item.type}</span>
+                      <span className="text-[9px] text-slate-600">{item.timestamp}</span>
+                    </div>
+                    <p className="text-sm font-mono font-bold tracking-wider text-slate-200 truncate uppercase">{item.data}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center opacity-10 space-y-4">
+                  <Database size={40} />
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-center px-12 leading-relaxed">No Data Packets Detected</p>
+                </div>
+              )}
             </div>
-          </div>
-        </aside>
-      </main>
-    
+
+            {/* Confidence Area */}
+            <div className="p-6 mt-auto border-t border-white/10 bg-white/[0.01] space-y-4 shrink-0">
+              <div className="flex justify-between items-end text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                <span>Inference Confidence</span>
+                <span className="text-blue-500">{Math.floor(progress)}%</span>
+              </div>
+              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_12px_#2563eb]"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          </aside>
+        </main>
+      </div>
+
       <style jsx global>{`
         @keyframes scan {
-          0% { top: 0%; opacity: 0; }
+          0% { transform: translateY(-150px); opacity: 0; }
           15% { opacity: 1; }
           85% { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
+          100% { transform: translateY(150px); opacity: 0; }
         }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

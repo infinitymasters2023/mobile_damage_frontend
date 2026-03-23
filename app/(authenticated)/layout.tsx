@@ -7,18 +7,32 @@ export default function Layout({
 }: {
   children: React.ReactNode
 }) {
-  return <section className="bg-black text-white">
-        <div className="flex min-h-screen">
+  return (
+    <section className="bg-[#050505] text-white min-h-screen font-sans selection:bg-blue-500/30">
+      <div className="flex h-screen overflow-hidden">
+        
+        {/* SIDEBAR: Stays fixed on the left */}
+       
 
-          <Sidebar />
+        {/* CONTENT AREA: Wraps everything else */}
+        <div className="flex flex-1 flex-col relative min-w-0">
+          
+          {/* HEADER: If you want it visible on all pages, uncomment below */}
+          {/* <Header title="InfyShield Dashboard" /> */}
 
-          <div className="flex flex-1 flex-col">           
-            <main className="flex-1"> 
-                {/* <Header title="OCR Purchase Device" /> */}
-    {children}
-     <Footer/></main>           
-          </div>
-        </div>
-      </section>
-  
+          <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col">
+            
+            {/* ACTUAL PAGE CONTENT */}
+            <div className="flex-1">
+               {children}
+            </div>
+
+            {/* FOOTER: Attached to the bottom of the scrollable area */}
+            <Footer />
+          </main>
+          
+        </div>  
+      </div>
+    </section>
+  )
 }
