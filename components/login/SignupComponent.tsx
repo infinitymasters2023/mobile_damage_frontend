@@ -30,7 +30,7 @@ export function SignupComponent() {
     >
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent opacity-50" />
 
-      <div className="text-center mb-0">
+      <div className="text-center">
         <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-white border border-blue-500/20 mb-4">
           <Image 
             src="/img/infyeazy_logo.svg" 
@@ -93,7 +93,7 @@ export function SignupComponent() {
         <button 
           type="submit"
           disabled={isLoading}
-          className="w-full mt-5 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900 text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95"
+          className="w-full mt-3 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900 text-white rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95"
         >
           {isLoading ? (
             <>

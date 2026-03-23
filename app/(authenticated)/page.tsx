@@ -39,7 +39,7 @@ export default function LandingPage() {
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent opacity-50" />
 
-          <div className="text-center mb-10">
+          <div className="text-center mb-5">
             <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-white border border-blue-500/20 mb-4">
               
               {/* 3. Using the direct path string for the logo */}
