@@ -55,7 +55,7 @@ export function SignupComponent() {
               type="text"
               required
               disabled={isLoading}
-              className="w-full px-4 py-4 bg-black backdrop-blur-md border border-white/5 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs uppercase tracking-tighter"
+              className="w-full px-4 py-4 bg-black backdrop-blur-md border border-white/9 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs uppercase tracking-tighter"
               placeholder="ENTER_UID"
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-blue-500/20 group-focus-within:bg-blue-500 animate-pulse" />
@@ -71,7 +71,7 @@ export function SignupComponent() {
             type="email"
             required
             disabled={isLoading}
-            className="w-full px-4 py-4 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs"
+            className="w-full px-4 py-4 bg-black backdrop-blur-md border border-white/9 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs uppercase tracking-tighter"
             placeholder="admin@infyeazy.io"
           />
         </div>
@@ -86,7 +86,7 @@ export function SignupComponent() {
               type="password"
               required
               disabled={isLoading}
-              className="w-full px-4 py-4 bg-black backdrop-blur-md border border-white/5 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs"
+              className="w-full px-4 py-4 bg-black backdrop-blur-md border border-white/9 rounded-xl focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-white placeholder-slate-800 font-mono text-xs uppercase tracking-tighter"
               placeholder="••••••••"
             />
             {/* HUD-style decorative corner inside input */}
@@ -103,12 +103,12 @@ export function SignupComponent() {
           {isLoading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              <span className="animate-pulse">Authorizing_Request...</span>
+              <span className="animate-pulse">sign in...</span>
             </>
           ) : (
             <>
               <UserPlus size={16} />
-              Initialize Account
+              Sign in
             </>
           )}
         </button>
@@ -116,7 +116,7 @@ export function SignupComponent() {
 
       <div className="mt-8 pt-6 border-t border-white/5 text-center">
         <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
-          Already registered? <Link href="/" className="text-blue-500 hover:text-blue-400">Log in</Link>
+          Already registered? <Link href="/login" className="text-blue-500 hover:text-blue-400">Log in</Link>
         </p>
       </div>
     </motion.div>
