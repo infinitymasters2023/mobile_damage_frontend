@@ -96,3 +96,19 @@ h4.main-heading::before {
     border-radius: 10px;
   }
 }
+
+
+/* Change the white/blue background to match your bg-black/40 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white; /* Keeps text white */
+  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset; /* Fills background with your dark color */
+  transition: background-color 5000s ease-in-out 0s;
+  background-clip: content-box !important;
+}
+
+/* Optional: Keep the backdrop blur effect visible */
+input:-internal-autofill-selected {
+  background-color: transparent !important;
+}

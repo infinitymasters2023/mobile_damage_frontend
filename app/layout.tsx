@@ -7,16 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-black text-white">
-        <div className="flex min-h-screen">
-
-          <Sidebar />
-
-          <div className="flex flex-1 flex-col">           
-            <main className="flex-1">{children}</main>           
-          </div>
-        </div>
+      <html lang="en">
+      <body>
+        {/* Layout UI */}
+        {/* Place children where you want to render a page or nested layout */}
+        <main>{children}</main>
       </body>
     </html>
   );
