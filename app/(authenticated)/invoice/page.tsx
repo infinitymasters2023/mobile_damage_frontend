@@ -2,286 +2,262 @@
 
 import { useState, useRef, useEffect } from "react";
 import {
-  Upload, FileText, Layers, Loader2, Cpu, Database, 
-  CheckCircle2, AlertCircle, Play, File, ChevronDown
+  Upload, CheckCircle2, AlertCircle, Loader2,
+  Layers, FileJson, Cpu, ChevronDown, FileText, FileSearch, Terminal, UploadCloud, Activity, FileIcon
 } from "lucide-react";
-import Image from "next/image";
-import Logo from "@/public/img/infyeazy_logo.svg";
 import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
 
-// 1. Unified API Protocol Configuration
-const PROTOCOLS = [
-  { id: "invoice", label: "Invoice OCR", endpoint: "/upload/invoice-pages" },
+const DOC_CONFIG = [
+  { id: "Oppo", label: "Oppo Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Nothing", label: "Nothing Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Vivo", label: "Vivo Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Samsung", label: "Samsung Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Hitachi", label: "Hitachi Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Motorola", label: "Motorola Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Apple", label: "Apple Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Xiaomi", label: "Xiaomi Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Lg", label: "Lg Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Panasonic", label: "Panasonic Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Purchase Bill", label: "Purchase Bill Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Sony", label: "Sony Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Lava", label: "Lava Invoice", endpoint: "/upload/invoice-pages" },
 ];
 
-const BASE_URL = "https://infyverifyapi.infyshield.com";
-
-export interface OCRTask {
-  id: string;
-  url: string;
-  file: File;
-  type: "image" | "pdf";
-  status: "idle" | "uploading" | "analyzing" | "completed" | "failed";
-  progress: number;
-  extractedData: any;
-  errorLog?: string;
-}
+const API_BASE = "https://infyverifyapi.infyshield.com";
 
 export default function EnterpriseOCR() {
-  const [tasks, setTasks] = useState<OCRTask[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeProtocol, setActiveProtocol] = useState(PROTOCOLS[0]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  
+  // ✅ SET DEFAULT HERE: Use the 'id' from DOC_CONFIG
+  const [selectedType, setSelectedType] = useState("Oppo"); 
+  
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const activeTask = tasks.find(t => t.id === selectedId) || null;
+  const activeTask = tasks.find(t => t.id === activeId) || (tasks.length > 0 ? tasks[tasks.length - 1] : null);
 
   useEffect(() => {
-    return () => tasks.forEach(t => URL.revokeObjectURL(t.url));
+    return () => tasks.forEach(t => t.preview && URL.revokeObjectURL(t.preview));
   }, [tasks]);
 
-  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent) => {
-    let files: File[] = [];
-    if ('files' in e.target && e.target.files) files = Array.from(e.target.files);
-    else if ('dataTransfer' in e) {
-      e.preventDefault();
-      files = Array.from(e.dataTransfer.files);
-    }
-    if (files.length === 0) return;
+  const handleUpload = (e: any) => {
+    const files = e.target.files || e.dataTransfer?.files;
+    if (!files || files.length === 0) return;
 
-    const newTasks: OCRTask[] = files.map(file => ({
-      id: `NODE-${Math.random().toString(36).substring(7).toUpperCase()}`,
-      url: URL.createObjectURL(file),
-      file: file,
-      type: file.type.includes("pdf") ? "pdf" : "image",
-      status: "idle",
+    const newFiles = Array.from(files).map((file: any) => ({
+      id: Math.random().toString(36).substring(7),
+      file,
+      preview: URL.createObjectURL(file),
+      protocol: selectedType,
+      mimeType: file.type.includes("pdf") ? "pdf" : "image",
+      status: "uploading",
       progress: 0,
-      extractedData: null
     }));
 
-    setTasks(prev => [...prev, ...newTasks]);
-    if (!selectedId) setSelectedId(newTasks[0].id);
+    setTasks(prev => [...prev, ...newFiles]);
+    newFiles.forEach((task: any) => processTask(task));
+    setIsDragging(false);
   };
 
-  const updateTask = (id: string, updates: Partial<OCRTask>) => {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
-  };
+  const processTask = async (task: any) => {
+    let progressInterval = setInterval(() => {
+      setTasks(prev => prev.map(t => (t.id === task.id && t.progress < 90) ? { ...t, progress: t.progress + 5 } : t));
+    }, 200);
 
-  const executePipeline = async (task: OCRTask) => {
-    if (task.status === "uploading" || task.status === "analyzing") return;
     try {
-      updateTask(task.id, { status: "uploading", progress: 15, errorLog: "" });
-      
-      const storageFormData = new FormData();
-      storageFormData.append("file", task.file);
-      const storageRes = await fetch("/api/upload", { method: "POST", body: storageFormData });
-      const storageData = await storageRes.json();
-      
-      if (!storageRes.ok) throw new Error(storageData.error || "UPLD_STORAGE_ERR");
-      
-      updateTask(task.id, { progress: 45, status: "analyzing" });
-      
-      const ocrRes = await fetch(`${BASE_URL}${activeProtocol.endpoint}`, {
+      const fData = new FormData();
+      fData.append("file", task.file);
+      const res = await fetch("/api/upload", { method: "POST", body: fData });
+      if (!res.ok) throw new Error("Storage Rejection");
+      const { virtualPath } = await res.json();
+
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "processing", vPath: virtualPath } : t));
+
+      const config = DOC_CONFIG.find(c => c.id === task.protocol);
+      const ocrRes = await fetch(`${API_BASE}${config?.endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fileUrl: storageData.virtualPath,
-          ticketNo: `TKT-${Date.now()}`,
-          documentName: activeProtocol.label
+          fileUrl: virtualPath,
+          documentname: task.protocol,
+          UploadedBy: "AI_Enterprise_User",
         }),
       });
-      
-      const result = await ocrRes.json();
-      if (!ocrRes.ok) throw new Error(result.message || "NEURAL_REJECTION");
-      
-      updateTask(task.id, { status: "completed", progress: 100, extractedData: result.data || result });
-    } catch (error: any) {
-      updateTask(task.id, { status: "failed", progress: 0, errorLog: error.message });
+
+      const ocrData = await ocrRes.json();
+      clearInterval(progressInterval);
+
+      if (!ocrRes.ok) throw new Error(ocrData.message || "OCR Protocol Error");
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "success", progress: 100, result: ocrData } : t));
+    } catch (err: any) {
+      clearInterval(progressInterval);
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "error", progress: 0, result: err.message } : t));
     }
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#020202] text-slate-300 font-sans overflow-hidden">
-      
-      {/* SIDEBAR - Hidden on mobile, visible on LG */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+    <div className="flex h-screen w-full bg-[#020202] text-slate-200 font-sans overflow-hidden">
+      <Sidebar />
 
       <div className="flex flex-col flex-grow min-w-0">
-        
-        {/* HUD HEADER */}
-        <header className="h-20 lg:h-16 border-b border-white/5 bg-black/40 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 shrink-0 z-50">
-          <div className="flex items-center gap-4 lg:gap-6">
-            <div className="bg-white p-1 px-2 lg:p-1.5 lg:px-3 rounded-lg shadow-xl shrink-0">
-              <Image src={Logo} alt="Logo" width={100} height={30} className="object-contain" priority unoptimized />
+        <Header
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          onUpload={() => fileInputRef.current?.click()}
+        />
+
+        <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleUpload} />
+
+        <main className="flex-grow flex flex-col lg:flex-row p-4 gap-4 overflow-hidden">
+
+          {/* QUEUE SIDEBAR */}
+          <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
+            <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
+              Invoice
+              <span className="bg-blue-600/20 text-blue-500 px-2 rounded-md">{tasks.length}</span>
             </div>
 
-            <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg group hover:border-blue-500/50 transition-all relative">
-              <Cpu size={14} className="text-blue-500" />
-              <select
-                className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer appearance-none pr-6"
-                value={activeProtocol.id}
-                onChange={(e) => setActiveProtocol(PROTOCOLS.find(p => p.id === e.target.value)!)}
-              >
-                {PROTOCOLS.map(p => (
-                  <option key={p.id} value={p.id}>{p.label}</option>
-                ))}
-              </select>
-              <ChevronDown size={12} className="absolute right-3 pointer-events-none text-slate-500" />
-            </div>
-          </div>
-
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="px-4 py-2 lg:px-5 lg:py-2.5 bg-blue-600 hover:bg-blue-500 text-[9px] lg:text-[10px] font-black uppercase tracking-widest rounded-full transition-all shadow-lg flex items-center gap-2"
-          >
-            <Upload size={14} /> 
-            <span className="hidden xs:inline">Ingest Assets</span>
-            <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelection} accept="image/*,application/pdf" />
-          </button>
-        </header>
-
-        {/* MAIN RESPONSIVE GRID */}
-        <main className="flex-grow flex flex-col lg:flex-row p-3 lg:p-4 gap-4 overflow-y-auto lg:overflow-hidden">
-          
-          {/* COLUMN 1: QUEUE (Top on mobile, Left on Desktop) */}
-          <aside className="w-full lg:w-72 flex flex-col shrink-0 gap-4">
-            <div className="rounded-2xl border border-white/5 bg-[#0a0a0a] flex flex-col overflow-hidden max-h-[250px] lg:max-h-none lg:h-full">
-              <div className="p-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between shrink-0">
-                <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Live Queue</span>
-                <span className="text-[10px] font-mono text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">{tasks.length}</span>
-              </div>
-              <div className="flex-grow overflow-y-auto p-2 space-y-2 scrollbar-thin">
-                {tasks.map(t => (
-                  <div
-                    key={t.id}
-                    onClick={() => setSelectedId(t.id)}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer ${selectedId === t.id ? 'bg-blue-600/10 border-blue-500/40 shadow-lg' : 'bg-white/[0.02] border-transparent hover:border-white/10'}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        {t.type === 'pdf' ? <File size={12} className="text-orange-500 shrink-0" /> : <FileText size={12} className="text-blue-500 shrink-0" />}
-                        <span className="text-[9px] font-mono text-slate-400 truncate uppercase">{t.file.name}</span>
-                      </div>
-                      {t.status === 'completed' ? <CheckCircle2 size={12} className="text-emerald-500" /> : t.status === 'failed' ? <AlertCircle size={12} className="text-red-500" /> : (t.status === 'idle' ? <Play size={10} className="text-slate-600" /> : <Loader2 size={12} className="text-blue-500 animate-spin" />)}
-                    </div>
-                    <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                      <div className={`h-full transition-all duration-700 ${t.status === 'failed' ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${t.progress}%` }} />
-                    </div>
+            <div className="flex-grow overflow-y-auto p-3 space-y-2 custom-scrollbar">
+              {tasks.length === 0 && (
+                <div className="h-full flex flex-col items-center justify-center opacity-10 py-20 text-center">
+                  <FileIcon size={40} strokeWidth={1} className="mb-2" />
+                  <p className="text-[10px] uppercase font-black tracking-widest">Awaiting Data</p>
+                </div>
+              )}
+              {tasks.map(task => (
+                <button
+                  key={task.id}
+                  onClick={() => setActiveId(task.id)}
+                  className={`w-full text-left p-4 rounded-2xl border transition-all ${activeId === task.id ? 'bg-blue-600/10 border-blue-500/40 shadow-lg' : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05]'}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] font-mono text-slate-400 truncate w-32 uppercase">{task.file.name}</span>
+                    <span className={`text-[10px] font-black ${task.status === 'success' ? 'text-emerald-400' : 'text-blue-500'}`}>
+                      {task.progress}%
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden mb-2">
+                    <div className={`h-full transition-all duration-500 ${task.status === 'success' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-500'}`} style={{ width: `${task.progress}%` }} />
+                  </div>
+                  <span className="text-[7px] font-black uppercase text-slate-600 tracking-tighter">Node: {task.protocol}</span>
+                </button>
+              ))}
             </div>
           </aside>
 
-          {/* COLUMN 2: WORKSPACE (Middle) */}
-          <div className="flex-grow flex flex-col gap-4 min-w-0 h-full">
-            {/* VIEWPORT */}
-            <div className="flex-[3] min-h-[400px] lg:min-h-0 rounded-[2rem] border border-white/5 bg-white/[0.02] flex flex-col overflow-hidden relative shadow-inner">
-              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+          {/* CENTRAL WORKSPACE */}
+          <section className="flex-grow flex flex-col gap-4 min-w-0">
+
+            {/* INGEST & VIEWPORT ZONE */}
+            <div
+              className={`flex-[3] rounded-[2.5rem] border transition-all relative overflow-hidden flex flex-col min-h-[450px]
+                ${isDragging ? 'bg-blue-600/10 border-blue-500 border-dashed scale-[0.995]' : 'bg-[#070707] border-white/5'}`}
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => { e.preventDefault(); handleUpload(e); }}
+            >
+              <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <Layers size={14} className="text-blue-500" /> Viewport
+                  <FileSearch size={14} className="text-blue-500" /> Invoice
                 </span>
-                {activeTask && (
-                  <div className="flex items-center gap-4">
-                    <button onClick={() => executePipeline(activeTask)} className="text-[9px] font-black text-emerald-500 hover:bg-emerald-500/10 px-3 py-1 border border-emerald-500/20 rounded-md uppercase transition-all">Process</button>
-                    <button onClick={() => setTasks(tasks.filter(tk => tk.id !== activeTask.id))} className="text-[9px] font-black text-red-500/70 hover:text-red-500 uppercase">Eject</button>
+
+                <div className="relative group/dropdown">
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
+                    <span className="text-[9px] font-black text-slate-300 uppercase">
+                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
+                    </span>
+                    <ChevronDown size={12} className="text-slate-500 group-hover/dropdown:rotate-180 transition-transform" />
                   </div>
-                )}
+                  <div className="absolute right-0 mt-2 w-48 bg-[#0f0f0f] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-[60] p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                    {DOC_CONFIG.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setSelectedType(c.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}
+                      >
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex-grow flex items-center justify-center p-4 bg-[#050505] relative overflow-hidden">
+              <div className="flex-grow relative overflow-hidden bg-[#050505] flex items-center justify-center">
                 {activeTask ? (
-                  <div className="relative h-full w-full flex items-center justify-center">
-                    {activeTask.type === "pdf" ? (
-                      <iframe src={`${activeTask.url}#toolbar=0&navpanes=0`} className="w-full h-full rounded-xl border border-white/10 bg-white" title="PDF Source" />
-                    ) : (
-                      <img src={activeTask.url} className="max-h-full max-w-full object-contain rounded-xl shadow-2xl border border-white/10" alt="img-src" />
-                    )}
-                    {(activeTask.status === "analyzing" || activeTask.status === "uploading") && (
-                      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-                        <div className="w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent absolute top-0 animate-[scan_2.5s_infinite_linear] shadow-[0_0_30px_#3b82f6]" />
-                      </div>
-                    )}
+                  <div className="w-full h-full p-4 lg:p-8 flex items-center justify-center animate-in zoom-in duration-300">
+                    <div className="relative w-full h-full max-w-5xl overflow-hidden bg-black flex items-center justify-center rounded-xl border border-white/5">
+                      {activeTask.mimeType === 'pdf' ? (
+                        <iframe
+                          src={activeTask.preview}
+                          className="w-full h-full border-none"
+                          title="PDF Viewport"
+                        />
+                      ) : (
+                        <img
+                          src={activeTask.preview}
+                          className="max-w-full max-h-full object-contain"
+                          alt="Asset Preview"
+                        />
+                      )}
+
+                      {activeTask.status !== 'success' && (
+                        <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                          <div className="w-full h-[3px] bg-blue-500 absolute top-0 animate-scan shadow-[0_0_15px_#3b82f6]" />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <div className="text-center opacity-10 uppercase text-[10px] tracking-[0.6em] font-black p-10">Waiting_Ingestion</div>
+                  <div className="flex flex-col items-center justify-center text-center p-6 lg:p-12 w-full h-full">
+                    <div className="w-full h-full bg-white/[0.01] flex flex-col items-center justify-center">
+                      <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner animate-pulse group hover:bg-blue-600/10 transition-colors">
+                        <UploadCloud size={40} className="text-blue-500" />
+                      </div>
+                      <h3 className="text-sm lg:text-base font-black uppercase tracking-[0.2em] mb-2 text-white">Initialize Data Ingest</h3>
+                      <p className="text-[10px] lg:text-xs text-slate-500 max-w-xs leading-relaxed mb-8">
+                        Process <span className="text-blue-400 font-bold">{DOC_CONFIG.find(c => c.id === selectedType)?.label}</span> assets.
+                      </p>
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all shadow-lg active:scale-95"
+                      >
+                        Browse System Files
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* BUFFER/TERMINAL */}
-            <div className="flex-[2] min-h-[250px] lg:min-h-0 rounded-[2rem] border border-white/5 bg-black flex flex-col overflow-hidden shadow-2xl">
-              <div className="p-4 border-b border-white/5 bg-white/[0.01]">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <Database size={14} className="text-emerald-500" /> Buffer
+            {/* DECODED DATA TERMINAL */}
+            <div className="flex-[2] bg-black rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col shadow-2xl">
+              <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">
+                  <Terminal size={14} className="text-emerald-500" /> Decoded_Metadata
                 </span>
               </div>
-              <div className="flex-grow p-6 font-mono text-[11px] overflow-y-auto scrollbar-thin">
-                {activeTask?.status === "completed" ? (
-                  <pre className="text-emerald-400/90 leading-relaxed whitespace-pre-wrap break-all">
-                    {JSON.stringify(activeTask.extractedData, null, 2)}
-                  </pre>
-                ) : activeTask?.status === "failed" ? (
-                  <div className="text-red-500 uppercase text-[10px] font-black p-4 border border-red-500/20 rounded bg-red-500/5">
-                    FAILURE: {activeTask.errorLog}
-                  </div>
+              <div className="flex-grow p-6 font-mono text-emerald-400/80 text-[11px] overflow-y-auto custom-scrollbar leading-relaxed">
+                {activeTask?.status === 'success' ? (
+                  <pre className="animate-in fade-in duration-500">{JSON.stringify(activeTask.result, null, 2)}</pre>
                 ) : (
-                  <div className="opacity-20 flex flex-col items-center justify-center h-full gap-4">
-                    <Loader2 className={`w-8 h-8 animate-spin text-blue-500 ${!activeTask || activeTask.status === 'idle' ? 'hidden' : ''}`} />
-                    <p className="text-[9px] tracking-[0.5em] font-black uppercase text-center">Awaiting_Neural_Sync</p>
+                  <div className="h-full flex flex-col justify-center items-center opacity-20 gap-4">
+                    {activeTask && <Loader2 className="animate-spin text-blue-500" />}
+                    <p className="uppercase text-[9px] tracking-[0.3em] font-black">Awaiting Stream Verification...</p>
                   </div>
                 )}
               </div>
             </div>
-          </div>
-
-          {/* COLUMN 3: METRICS (Bottom on mobile, Right on Desktop) */}
-          <aside className="w-full lg:w-72 flex flex-col shrink-0">
-            <div className="rounded-[2rem] border border-white/5 bg-[#0a0a0a] flex flex-col p-6 lg:h-full shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px] rounded-full -mr-32 -mt-32" />
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8 text-center underline underline-offset-8 decoration-blue-500/20">Metrics</h3>
-
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative w-32 h-32 lg:w-40 lg:h-40 flex items-center justify-center">
-                  <svg className="absolute inset-0 w-full h-full -rotate-90">
-                    <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="6" />
-                    <circle cx="50%" cy="50%" r="42%" className="stroke-blue-600 fill-none transition-all duration-1000 ease-out"
-                      strokeWidth="6" strokeDasharray="300" strokeDashoffset={300 - (300 * (activeTask?.progress || 0)) / 100} strokeLinecap="round" />
-                  </svg>
-                  <span className="text-3xl lg:text-4xl font-black text-white tracking-tighter">{activeTask?.progress || 0}</span>
-                </div>
-              </div>
-
-              <div className="space-y-4 flex-grow">
-                <div className="p-4 bg-black/40 border border-white/10 rounded-2xl text-[9px] space-y-3 uppercase tracking-[0.1em] font-bold shadow-inner">
-                  <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500">PROTOCOL</span> <span className="text-blue-500">{activeProtocol.id}</span></div>
-                  <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-slate-500">FORMAT</span> <span className="text-slate-300">{activeTask?.type || 'READY'}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">STATUS</span> <span className="text-slate-300">{activeTask?.status || 'STANDBY'}</span></div>
-                </div>
-              </div>
-
-              <button className="w-full mt-6 py-4 bg-white/[0.03] border border-white/5 hover:bg-white/[0.08] rounded-2xl text-[9px] font-black text-slate-400 hover:text-white uppercase tracking-[0.2em] transition-all">
-                SYNC_TO_CLOUD
-              </button>
-            </div>
-          </aside>
+          </section>
         </main>
       </div>
 
       <style jsx global>{`
-        @keyframes scan { 
-          0% { transform: translateY(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(400px); opacity: 0; }
-        }
-        .scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
-        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        select option { background: #0a0a0a; color: white; }
-        @media (max-width: 640px) {
-          @keyframes scan { 100% { transform: translateY(300px); } }
-        }
+        @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .animate-scan { animation: scan 3s linear infinite; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
       `}</style>
     </div>
   );

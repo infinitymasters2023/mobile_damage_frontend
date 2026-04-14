@@ -2,26 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import {
-  Upload, CheckCircle2, AlertCircle, Loader2,
-  Layers, FileJson, Cpu, ChevronDown, FileText, FileSearch, Terminal, UploadCloud, Activity, FileIcon
+  Loader2, ChevronDown,  FileSearch, Terminal, UploadCloud,  FileIcon   
 } from "lucide-react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Oppo Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Nothing", label: "Nothing Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Vivo", label: "Vivo Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Samsung", label: "Samsung Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Hitachi", label: "Hitachi Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Motorola", label: "Motorola Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Apple", label: "Apple Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Xiaomi", label: "Xiaomi Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Lg", label: "Lg Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Panasonic", label: "Panasonic Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Purchase Bill", label: "Purchase Bill Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Sony", label: "Sony Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Lava", label: "Lava Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Excel_only", label: "Excel Only", endpoint: "/upload/reliance" },
+  { id: "Purchase_order", label: "Purchase Order", endpoint: "/upload/reliance" }, 
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -31,7 +19,7 @@ export default function EnterpriseOCR() {
   const [activeId, setActiveId] = useState<string | null>(null);
   
   // ✅ SET DEFAULT HERE: Use the 'id' from DOC_CONFIG
-  const [selectedType, setSelectedType] = useState("Oppo"); 
+  const [selectedType, setSelectedType] = useState("Excel_only"); 
   
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,7 +79,7 @@ export default function EnterpriseOCR() {
 
       if (!ocrRes.ok) throw new Error(ocrData.message || "OCR Protocol Error");
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "success", progress: 100, result: ocrData } : t));
-    } catch (err: unknown) {
+    } catch (err: any) {
       clearInterval(progressInterval);
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "error", progress: 0, result: err.message } : t));
     }
@@ -115,7 +103,7 @@ export default function EnterpriseOCR() {
           {/* QUEUE SIDEBAR */}
           <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
             <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
-              Neural Pipeline
+              Invoice
               <span className="bg-blue-600/20 text-blue-500 px-2 rounded-md">{tasks.length}</span>
             </div>
 
@@ -160,8 +148,28 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Read Purchase Device
+                  <FileSearch size={14} className="text-blue-500" /> Invoice
                 </span>
+
+                <div className="relative group/dropdown">
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
+                    <span className="text-[9px] font-black text-slate-300 uppercase">
+                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
+                    </span>
+                    <ChevronDown size={12} className="text-slate-500 group-hover/dropdown:rotate-180 transition-transform" />
+                  </div>
+                  <div className="absolute right-0 mt-2 w-48 bg-[#0f0f0f] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-[60] p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                    {DOC_CONFIG.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setSelectedType(c.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}
+                      >
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="flex-grow relative overflow-hidden bg-[#050505] flex items-center justify-center">
@@ -191,7 +199,7 @@ export default function EnterpriseOCR() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center p-6 lg:p-12 w-full h-full">
-                    <div className="w-full h-full  flex flex-col items-center justify-center">
+                    <div className="w-full h-full bg-white/[0.01] flex flex-col items-center justify-center">
                       <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner animate-pulse group hover:bg-blue-600/10 transition-colors">
                         <UploadCloud size={40} className="text-blue-500" />
                       </div>
