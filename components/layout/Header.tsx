@@ -13,21 +13,25 @@ export default function Header({ title }: HeaderProps) {
   return (
     <header className="hidden lg:flex h-16 border-b border-white/5 bg-[#0a0a0a] items-center justify-between px-8 shrink-0 z-50 sticky top-0 backdrop-blur-md">
       <div className="flex items-center gap-6">
-        
+
         {/* Logo Container - Wrapped in Link */}
-     
-          <div className="bg-white p-1.5 px-3 rounded-lg shadow-xl">
-            <Image 
-              src={Logo} 
-              alt="logo" 
-              width={120} 
-              height={150} 
-              className="object-cover" 
-              priority 
-              unoptimized
-            />
-          </div>
-       
+
+        <div>
+          <Link href="/" className="block">
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-xl hover:opacity-90 transition-opacity cursor-pointer">
+              <Image
+                src={Logo}
+                alt="logo"
+                width={120}
+                height={40} // Adjusted height to be more realistic for a logo
+                className="object-contain" // Use contain so the logo isn't cropped
+                priority
+                unoptimized
+              />
+            </div>
+          </Link>
+        </div>
+
 
         {/* Vertical Divider */}
         <div className="h-6 w-[1px] bg-white/10" />
