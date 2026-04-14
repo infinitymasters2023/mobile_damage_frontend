@@ -106,7 +106,7 @@ export default function EnterpriseOCR() {
           {/* QUEUE SIDEBAR */}
           <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
             <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
-              Invoice
+              Percentage
               <span className="bg-blue-600/20 text-blue-500 px-2 rounded-md">{tasks.length}</span>
             </div>
 
@@ -151,7 +151,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> KYC
                 </span>
 
                 <div className="relative group/dropdown">

@@ -9,12 +9,12 @@ import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Oppo Repair Estimate", endpoint: "/upload/invoice-pages" },
-  { id: "Sony", label: "Read Sony Estimate", endpoint: "/upload/invoice-pages" },
-  { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Panasonic", label: "Read Panasonic Repair Estimate", endpoint: "/upload/invoice-pages" },
-  { id: "Apple", label: "Read Apple Repair Estimate", endpoint: "/upload/invoice-pages" },
-  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/invoice-pages" },  
+  { id: "Oppo", label: "Oppo Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Sony", label: "Read Sony Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Panasonic", label: "Read Panasonic Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Apple", label: "Read Apple Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/repairEstimate" },  
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -108,7 +108,7 @@ export default function EnterpriseOCR() {
           {/* QUEUE SIDEBAR */}
           <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
             <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
-              Invoice
+              Percentage
               <span className="bg-blue-600/20 text-blue-500 px-2 rounded-md">{tasks.length}</span>
             </div>
 
@@ -153,7 +153,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> Repair Estimate
                 </span>
 
                 <div className="relative group/dropdown">
