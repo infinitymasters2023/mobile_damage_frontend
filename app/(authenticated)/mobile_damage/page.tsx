@@ -89,9 +89,7 @@ export default function EnterpriseOCR() {
       if (!ocrRes.ok) throw new Error(ocrData.message || "OCR Protocol Error");
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "success", progress: 100, result: ocrData } : t));
     } catch (err: unknown) {
-      clearInterval(progressInterval);
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "error", progress: 0, result: err.message } : t));
-    }
+    
   };
 
   return (
@@ -100,6 +98,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
+          title="Mobile Damage"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
