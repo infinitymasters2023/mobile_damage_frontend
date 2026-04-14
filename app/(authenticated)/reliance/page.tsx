@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import {
-  Loader2, ChevronDown,  FileSearch, Terminal, UploadCloud,  FileIcon   
-} from "lucide-react";
+import { Loader2, ChevronDown,  FileSearch, Terminal, UploadCloud,  FileIcon } from "lucide-react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 

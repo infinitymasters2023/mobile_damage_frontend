@@ -2,12 +2,13 @@
   "name": "mobile_damage_frontend",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint",
+  "export": "npm run build" 
+},
   "dependencies": {
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.575.0",

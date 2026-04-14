@@ -8,7 +8,7 @@ import {
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 
-const DOC_CONFIG = [ ];
+const DOC_CONFIG: any[] = [ ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
 
