@@ -1,20 +1,21 @@
-export const saveUser = (user: {
-  name: string;
+export interface User {
+  name?: string;
   email: string;
-  password: string;
-}) => {
-  localStorage.setItem("user", JSON.stringify(user));
+  password?: string;
+}
+
+// Writes user data to browser storage
+export const saveUser = (userData: User): void => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("user_node_data", JSON.stringify(userData));
+  }
 };
 
-export const getUser = () => {
-  const data = localStorage.getItem("user");
-  return data ? JSON.parse(data) : null;
-};
-
-export const isUserRegistered = () => {
-  return localStorage.getItem("user") !== null;
-};
-
-export const logoutUser = () => {
-  localStorage.removeItem("user");
+// Reads user data from browser storage
+export const getUser = (): User | null => {
+  if (typeof window !== "undefined") {
+    const data = localStorage.getItem("user_node_data");
+    return data ? (JSON.parse(data) as User) : null;
+  }
+  return null;
 };
