@@ -1,12 +1,24 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Upload, CheckCircle2, AlertCircle, Loader2,
-  Layers, FileJson, Cpu, ChevronDown, FileText, FileSearch, Terminal, UploadCloud, Activity, FileIcon   
+  Loader2, ChevronDown, FileSearch, Terminal, UploadCloud, FileIcon
 } from "lucide-react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
+
+// 1. Define the Task structure to satisfy TypeScript
+interface Task {
+  id: string;
+  file: File;
+  preview: string;
+  protocol: string;
+  mimeType: 'pdf' | 'image';
+  status: 'uploading' | 'processing' | 'success' | 'error';
+  progress: number;
+  vPath?: string;
+  result?: unknown;
+}
 
 const DOC_CONFIG = [
   { id: "Oppo", label: "Oppo Repair Estimate", endpoint: "/upload/repairEstimate" },
@@ -14,32 +26,39 @@ const DOC_CONFIG = [
   { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/repairEstimate" },
   { id: "Panasonic", label: "Read Panasonic Repair Estimate", endpoint: "/upload/repairEstimate" },
   { id: "Apple", label: "Read Apple Repair Estimate", endpoint: "/upload/repairEstimate" },
-  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/repairEstimate" },  
+  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/repairEstimate" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
 
 export default function EnterpriseOCR() {
-  const [tasks, setTasks] = useState<any[]>([]);
+  // Use Task[] instead of any[]
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
-  
-  // ✅ SET DEFAULT HERE: Use the 'id' from DOC_CONFIG
-  const [selectedType, setSelectedType] = useState("Oppo"); 
-  
+  const [selectedType, setSelectedType] = useState("Oppo");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Derive activeTask safely
   const activeTask = tasks.find(t => t.id === activeId) || (tasks.length > 0 ? tasks[tasks.length - 1] : null);
 
   useEffect(() => {
     return () => tasks.forEach(t => t.preview && URL.revokeObjectURL(t.preview));
   }, [tasks]);
 
-  const handleUpload = (e: any) => {
-    const files = e.target.files || e.dataTransfer?.files;
+  // Handle upload with specific React types for events
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    let files: FileList | null = null;
+
+    if ('dataTransfer' in e) {
+      files = e.dataTransfer.files;
+    } else if ('target' in e && e.target.files) {
+      files = e.target.files;
+    }
+
     if (!files || files.length === 0) return;
 
-    const newFiles = Array.from(files).map((file: any) => ({
+    const newFiles: Task[] = Array.from(files).map((file) => ({
       id: Math.random().toString(36).substring(7),
       file,
       preview: URL.createObjectURL(file),
@@ -50,43 +69,111 @@ export default function EnterpriseOCR() {
     }));
 
     setTasks(prev => [...prev, ...newFiles]);
-    newFiles.forEach((task: any) => processTask(task));
+    newFiles.forEach((task) => processTask(task));
     setIsDragging(false);
   };
 
-  const processTask = async (task: any) => {
-    let progressInterval = setInterval(() => {
-      setTasks(prev => prev.map(t => (t.id === task.id && t.progress < 90) ? { ...t, progress: t.progress + 5 } : t));
+  const processTask = async (task: Task) => {
+    // ✅ FIX: proper interval type (removes red line)
+    const progressInterval: ReturnType<typeof setInterval> = setInterval(() => {
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id && t.progress < 90
+            ? { ...t, progress: t.progress + 5 }
+            : t
+        )
+      );
     }, 200);
 
     try {
       const fData = new FormData();
       fData.append("file", task.file);
-      const res = await fetch("/api/upload", { method: "POST", body: fData });
-      if (!res.ok) throw new Error("Storage Rejection");
-      const { virtualPath } = await res.json();
 
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "processing", vPath: virtualPath } : t));
-
-      const config = DOC_CONFIG.find(c => c.id === task.protocol);
-      const ocrRes = await fetch(`${API_BASE}${config?.endpoint}`, {
+      const res = await fetch("/api/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileUrl: virtualPath,
-          documentname: task.protocol,
-          UploadedBy: "AI_Enterprise_User",
-        }),
+        body: fData,
       });
 
-      const ocrData = await ocrRes.json();
+      if (!res.ok) throw new Error("Storage Rejection");
+
+      const { virtualPath } = (await res.json()) as {
+        virtualPath: string;
+      };
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "processing" as const,
+              vPath: virtualPath,
+            }
+            : t
+        )
+      );
+
+      const config = DOC_CONFIG.find((c) => c.id === task.protocol);
+
+      const ocrRes = await fetch(
+        `${API_BASE}${config?.endpoint ?? ""}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileUrl: virtualPath,
+            documentname: task.protocol,
+            UploadedBy: "AI_Enterprise_User",
+          }),
+        }
+      );
+
+      const ocrData: unknown = await ocrRes.json();
+
       clearInterval(progressInterval);
 
-      if (!ocrRes.ok) throw new Error(ocrData.message || "OCR Protocol Error");
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "success", progress: 100, result: ocrData } : t));
-    } catch (err: any) {
+      if (!ocrRes.ok) {
+        const err = ocrData as {
+          message?: string;
+          error?: { message?: string };
+        };
+
+        throw new Error(
+          err?.message ??
+          err?.error?.message ??
+          "OCR Protocol Error"
+        );
+      }
+      
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "success" as const,
+              progress: 100,
+              result: ocrData,
+            }
+            : t
+        )
+      );
+    } catch (err: unknown) {
       clearInterval(progressInterval);
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "error", progress: 0, result: err.message } : t));
+
+      const message =
+        err instanceof Error ? err.message : "Unknown Error";
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "error" as const,
+              progress: 0,
+              result: message,
+            }
+            : t
+        )
+      );
     }
   };
 
@@ -95,18 +182,17 @@ export default function EnterpriseOCR() {
       <Sidebar />
 
       <div className="flex flex-col flex-grow min-w-0">
-       <Header
-        title="Repair Estimate"
-        selectedType={selectedType}
-        setSelectedType={setSelectedType}
-        onUpload={() => fileInputRef.current?.click()}
-      />
+        <Header
+          title="Repair Estimate"
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          onUpload={() => fileInputRef.current?.click()}
+        />
 
         <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleUpload} />
 
         <main className="flex-grow flex flex-col lg:flex-row p-4 gap-4 overflow-hidden">
 
-          {/* QUEUE SIDEBAR */}
           <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
             <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
               Percentage
@@ -141,10 +227,7 @@ export default function EnterpriseOCR() {
             </div>
           </aside>
 
-          {/* CENTRAL WORKSPACE */}
           <section className="flex-grow flex flex-col gap-4 min-w-0">
-
-            {/* INGEST & VIEWPORT ZONE */}
             <div
               className={`flex-[3] rounded-[2.5rem] border transition-all relative overflow-hidden flex flex-col min-h-[450px]
                 ${isDragging ? 'bg-blue-600/10 border-blue-500 border-dashed scale-[0.995]' : 'bg-[#070707] border-white/5'}`}
@@ -225,7 +308,6 @@ export default function EnterpriseOCR() {
               </div>
             </div>
 
-            {/* DECODED DATA TERMINAL */}
             <div className="flex-[2] bg-black rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col shadow-2xl">
               <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">

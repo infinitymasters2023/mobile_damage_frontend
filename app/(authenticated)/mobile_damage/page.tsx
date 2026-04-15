@@ -1,49 +1,64 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Loader2, FileSearch, Terminal, UploadCloud, FileIcon } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Loader2, ChevronDown, FileSearch, Terminal, UploadCloud, FileIcon
+} from "lucide-react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 
+// 1. Define the Task structure to satisfy TypeScript
+interface Task {
+  id: string;
+  file: File;
+  preview: string;
+  protocol: string;
+  mimeType: 'pdf' | 'image';
+  status: 'uploading' | 'processing' | 'success' | 'error';
+  progress: number;
+  vPath?: string;
+  result?: unknown;
+}
+
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Oppo Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Nothing", label: "Nothing Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Vivo", label: "Vivo Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Samsung", label: "Samsung Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Hitachi", label: "Hitachi Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Motorola", label: "Motorola Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Apple", label: "Apple Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Xiaomi", label: "Xiaomi Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Lg", label: "Lg Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Panasonic", label: "Panasonic Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Purchase Bill", label: "Purchase Bill Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Sony", label: "Sony Invoice", endpoint: "/upload/invoice-pages" },
-  { id: "Lava", label: "Lava Invoice", endpoint: "/upload/invoice-pages" },
+  { id: "Oppo", label: "Oppo Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Sony", label: "Read Sony Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Panasonic", label: "Read Panasonic Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Apple", label: "Read Apple Repair Estimate", endpoint: "/upload/repairEstimate" },
+  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/repairEstimate" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
 
 export default function EnterpriseOCR() {
-  const [tasks, setTasks] = useState<any[]>([]);
+  // Use Task[] instead of any[]
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
-  
-  // ✅ SET DEFAULT HERE: Use the 'id' from DOC_CONFIG
-  const [selectedType, setSelectedType] = useState("Oppo"); 
-  
+  const [selectedType, setSelectedType] = useState("Oppo");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Derive activeTask safely
   const activeTask = tasks.find(t => t.id === activeId) || (tasks.length > 0 ? tasks[tasks.length - 1] : null);
 
   useEffect(() => {
     return () => tasks.forEach(t => t.preview && URL.revokeObjectURL(t.preview));
   }, [tasks]);
 
-  const handleUpload = (e: any) => {
-    const files = e.target.files || e.dataTransfer?.files;
+  // Handle upload with specific React types for events
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    let files: FileList | null = null;
+
+    if ('dataTransfer' in e) {
+      files = e.dataTransfer.files;
+    } else if ('target' in e && e.target.files) {
+      files = e.target.files;
+    }
+
     if (!files || files.length === 0) return;
 
-    const newFiles = Array.from(files).map((file: any) => ({
+    const newFiles: Task[] = Array.from(files).map((file) => ({
       id: Math.random().toString(36).substring(7),
       file,
       preview: URL.createObjectURL(file),
@@ -54,43 +69,111 @@ export default function EnterpriseOCR() {
     }));
 
     setTasks(prev => [...prev, ...newFiles]);
-    newFiles.forEach((task: any) => processTask(task));
+    newFiles.forEach((task) => processTask(task));
     setIsDragging(false);
   };
 
-  const processTask = async (task: any) => {
-    let progressInterval = setInterval(() => {
-      setTasks(prev => prev.map(t => (t.id === task.id && t.progress < 90) ? { ...t, progress: t.progress + 5 } : t));
+  const processTask = async (task: Task) => {
+    // ✅ FIX: proper interval type (removes red line)
+    const progressInterval: ReturnType<typeof setInterval> = setInterval(() => {
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id && t.progress < 90
+            ? { ...t, progress: t.progress + 5 }
+            : t
+        )
+      );
     }, 200);
 
     try {
       const fData = new FormData();
       fData.append("file", task.file);
-      const res = await fetch("/api/upload", { method: "POST", body: fData });
-      if (!res.ok) throw new Error("Storage Rejection");
-      const { virtualPath } = await res.json();
 
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "processing", vPath: virtualPath } : t));
-
-      const config = DOC_CONFIG.find(c => c.id === task.protocol);
-      const ocrRes = await fetch(`${API_BASE}${config?.endpoint}`, {
+      const res = await fetch("/api/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileUrl: virtualPath,
-          documentname: task.protocol,
-          UploadedBy: "AI_Enterprise_User",
-        }),
+        body: fData,
       });
 
-      const ocrData = await ocrRes.json();
+      if (!res.ok) throw new Error("Storage Rejection");
+
+      const { virtualPath } = (await res.json()) as {
+        virtualPath: string;
+      };
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "processing" as const,
+              vPath: virtualPath,
+            }
+            : t
+        )
+      );
+
+      const config = DOC_CONFIG.find((c) => c.id === task.protocol);
+
+      const ocrRes = await fetch(
+        `${API_BASE}${config?.endpoint ?? ""}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileUrl: virtualPath,
+            documentname: task.protocol,
+            UploadedBy: "AI_Enterprise_User",
+          }),
+        }
+      );
+
+      const ocrData: unknown = await ocrRes.json();
+
       clearInterval(progressInterval);
 
-      if (!ocrRes.ok) throw new Error(ocrData.message || "OCR Protocol Error");
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "success", progress: 100, result: ocrData } : t));
+      if (!ocrRes.ok) {
+        const err = ocrData as {
+          message?: string;
+          error?: { message?: string };
+        };
+
+        throw new Error(
+          err?.message ??
+          err?.error?.message ??
+          "OCR Protocol Error"
+        );
+      }
+      
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "success" as const,
+              progress: 100,
+              result: ocrData,
+            }
+            : t
+        )
+      );
     } catch (err: unknown) {
       clearInterval(progressInterval);
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: "error", progress: 0, result: err.message } : t));
+
+      const message =
+        err instanceof Error ? err.message : "Unknown Error";
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? {
+              ...t,
+              status: "error" as const,
+              progress: 0,
+              result: message,
+            }
+            : t
+        )
+      );
     }
   };
 
@@ -100,7 +183,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Mobile D"
+          title="Mobile Damage"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -110,7 +193,6 @@ export default function EnterpriseOCR() {
 
         <main className="flex-grow flex flex-col lg:flex-row p-4 gap-4 overflow-hidden">
 
-          {/* QUEUE SIDEBAR */}
           <aside className="w-full lg:w-80 bg-[#0a0a0a] rounded-3xl border border-white/5 flex flex-col overflow-hidden shadow-2xl shrink-0">
             <div className="p-5 border-b border-white/5 bg-white/[0.02] flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-500">
               Percentage
@@ -145,10 +227,7 @@ export default function EnterpriseOCR() {
             </div>
           </aside>
 
-          {/* CENTRAL WORKSPACE */}
           <section className="flex-grow flex flex-col gap-4 min-w-0">
-
-            {/* INGEST & VIEWPORT ZONE */}
             <div
               className={`flex-[3] rounded-[2.5rem] border transition-all relative overflow-hidden flex flex-col min-h-[450px]
                 ${isDragging ? 'bg-blue-600/10 border-blue-500 border-dashed scale-[0.995]' : 'bg-[#070707] border-white/5'}`}
@@ -158,7 +237,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Read Purchase Device
+                  <FileSearch size={14} className="text-blue-500" /> Mobile Damage
                 </span>
               </div>
 
@@ -189,7 +268,7 @@ export default function EnterpriseOCR() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center p-6 lg:p-12 w-full h-full">
-                    <div className="w-full h-full  flex flex-col items-center justify-center">
+                    <div className="w-full h-full bg-white/[0.01] flex flex-col items-center justify-center">
                       <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-inner animate-pulse group hover:bg-blue-600/10 transition-colors">
                         <UploadCloud size={40} className="text-blue-500" />
                       </div>
@@ -209,7 +288,6 @@ export default function EnterpriseOCR() {
               </div>
             </div>
 
-            {/* DECODED DATA TERMINAL */}
             <div className="flex-[2] bg-black rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col shadow-2xl">
               <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">
