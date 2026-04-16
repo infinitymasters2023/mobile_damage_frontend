@@ -21,7 +21,7 @@ interface Task {
 }
 
 const DOC_CONFIG = [
-  // { id: "Oppo", label: "Certificate Of Insurance", endpoint: "/upload/repairEstimate" },
+  { id: "Oppo", label: "Certificate Of Insurance", endpoint: "/upload/repairEstimate" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -235,25 +235,6 @@ export default function EnterpriseOCR() {
                   <FileSearch size={14} className="text-blue-500" /> Certificate Of Insurance
                 </span>
 
-                {/* <div className="relative group/dropdown">
-                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
-                    <span className="text-[9px] font-black text-slate-300 uppercase">
-                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
-                    </span>
-                    <ChevronDown size={12} className="text-slate-500 group-hover/dropdown:rotate-180 transition-transform" />
-                  </div>
-                  <div className="absolute right-0 mt-2 w-48 bg-[#0f0f0f] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-[60] p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
-                    {DOC_CONFIG.map(c => (
-                      <button
-                        key={c.id}
-                        onClick={() => setSelectedType(c.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}
-                      >
-                        {c.label}
-                      </button>
-                    ))}
-                  </div>
-                </div> */}
               </div>
 
               <div className="flex-grow relative overflow-hidden bg-[#050505] flex items-center justify-center">
