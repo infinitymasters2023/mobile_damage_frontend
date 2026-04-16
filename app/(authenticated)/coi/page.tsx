@@ -21,12 +21,7 @@ interface Task {
 }
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Oppo Repair Estimate", endpoint: "/upload/repairEstimate" },
-  { id: "Sony", label: "Read Sony Estimate", endpoint: "/upload/repairEstimate" },
-  { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/repairEstimate" },
-  { id: "Panasonic", label: "Read Panasonic Repair Estimate", endpoint: "/upload/repairEstimate" },
-  { id: "Apple", label: "Read Apple Repair Estimate", endpoint: "/upload/repairEstimate" },
-  { id: "Samsung", label: "Samsung Repair Estimate", endpoint: "/upload/repairEstimate" },
+  // { id: "Oppo", label: "Certificate Of Insurance", endpoint: "/upload/repairEstimate" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -183,7 +178,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Repair Estimate"
+          title="Certificate Of Insurance"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -237,10 +232,10 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Repair Estimate
+                  <FileSearch size={14} className="text-blue-500" /> Certificate Of Insurance
                 </span>
 
-                <div className="relative group/dropdown">
+                {/* <div className="relative group/dropdown">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
                     <span className="text-[9px] font-black text-slate-300 uppercase">
                       {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
@@ -258,7 +253,7 @@ export default function EnterpriseOCR() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex-grow relative overflow-hidden bg-[#050505] flex items-center justify-center">

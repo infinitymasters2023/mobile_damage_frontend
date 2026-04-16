@@ -23,7 +23,6 @@ interface Task {
 const DOC_CONFIG = [
   { id: "Excel", label: "Excel Only", endpoint: "/upload/reliance" },
   { id: "Purchase", label: "Purchase Order", endpoint: "/upload/reliance" },
-  { id: "Samsung", label: "Read Samsung Invoice", endpoint: "/upload/reliance" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -180,7 +179,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Invoice"
+          title="Reliance"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -234,7 +233,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> Reliance
                 </span>
 
                 <div className="relative group/dropdown">
@@ -249,8 +248,7 @@ export default function EnterpriseOCR() {
                       <button
                         key={c.id}
                         onClick={() => setSelectedType(c.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}
-                      >
+                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}>
                         {c.label}
                       </button>
                     ))}

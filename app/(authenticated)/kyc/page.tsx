@@ -180,7 +180,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Invoice"
+          title="Kyc Verification"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -234,7 +234,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> Kyc Verification
                 </span>
 
                 <div className="relative group/dropdown">

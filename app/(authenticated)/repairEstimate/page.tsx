@@ -21,17 +21,17 @@ interface Task {
 }
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Read Oppo Invoice", endpoint: "/upload/invoice" },
-  { id: "Vivo", label: "Read Vivo Invoice", endpoint: "/upload/invoice" },
-  { id: "Samsung", label: "Read Samsung Invoice", endpoint: "/upload/invoice" },
-  { id: "Motorola", label: "Read Motorola Invoice", endpoint: "/upload/invoice" },
-  { id: "Apple", label: "Read Apple Invoice", endpoint: "/upload/invoice" },
-  { id: "Xiaomi", label: "Read Xiaomi Invoice", endpoint: "/upload/invoice" },
-  { id: "Lg", label: "Read Lg Invoice", endpoint: "/upload/invoice" },
-  { id: "Panasonic", label: "Read Panasonic Invoice", endpoint: "/upload/invoice" },
-  { id: "Purchase", label: "Read Purchase Bill", endpoint: "/upload/invoice" },
-  { id: "Sony", label: "Read Sony Invoice", endpoint: "/upload/invoice" },
-  { id: "Lava", label: "Read Lava Invoice", endpoint: "/upload/invoice" },
+  { id: "Oppo", label: "Read Oppo Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Vivo", label: "Read Vivo Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Samsung", label: "Read Samsung Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Motorola", label: "Read Motorola Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Apple", label: "Read Apple Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Xiaomi", label: "Read Xiaomi Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Lg", label: "Read Lg Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Panasonic", label: "Read Panasonic Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Purchase", label: "Read Purchase Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Sony", label: "Read Sony Repair Invoice", endpoint: "/upload/repairEstimate" },
+  { id: "Lava", label: "Read Lava Repair Invoice", endpoint: "/upload/repairEstimate" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -188,7 +188,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Invoice"
+          title="Repair Estimate"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -242,7 +242,7 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> Repair Estimate
                 </span>
 
                 <div className="relative group/dropdown">
