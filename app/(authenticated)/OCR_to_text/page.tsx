@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useRef, useEffect } from "react";
 import {
   Loader2, ChevronDown, FileSearch, Terminal, UploadCloud, FileIcon
@@ -21,7 +20,13 @@ interface Task {
 }
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Certificate Of Insurance", endpoint: "/upload/repairEstimate" },
+  { id: "Text", label: "OCR to Text", endpoint: "/upload/OCR_to_text" },
+  { id: "Payment", label: "Payment Proof Ocr", endpoint: "/upload/OCR_to_text" },
+  { id: "Gst", label: "Gst Certificate Ocr", endpoint: "/upload/OCR_to_text" },
+  { id: "Imei", label: "Read Imei", endpoint: "/upload/OCR_to_text" },
+  { id: "COI", label: "Certificate Of Insurance", endpoint: "/upload/OCR_to_text" },
+  { id: "Purchase", label: "Read Purchase Device", endpoint: "/upload/OCR_to_text" },
+  { id: "Barcode", label: "Barcode Reader", endpoint: "/upload/OCR_to_text" },
 ];
 
 const API_BASE = "https://infyverifyapi.infyshield.com";
@@ -30,7 +35,7 @@ export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
   const [tasks, setTasks] = useState<Task[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState("Oppo");
+  const [selectedType, setSelectedType] = useState("Text");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -62,7 +67,7 @@ export default function EnterpriseOCR() {
       status: "uploading",
       progress: 0,
     }));
-
+    
     setTasks(prev => [...prev, ...newFiles]);
     newFiles.forEach((task) => processTask(task));
     setIsDragging(false);
@@ -178,7 +183,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Certificate Of Insurance"
+          title="OCR to Text"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -232,9 +237,27 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Certificate Of Insurance
+                  <FileSearch size={14} className="text-blue-500" /> OCR to Text
                 </span>
 
+                <div className="relative group/dropdown">
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
+                    <span className="text-[9px] font-black text-slate-300 uppercase">
+                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
+                    </span>
+                    <ChevronDown size={12} className="text-slate-500 group-hover/dropdown:rotate-180 transition-transform" />
+                  </div>
+                  <div className="absolute right-0 mt-2 w-48 bg-[#0f0f0f] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-[60] p-2 max-h-[300px] overflow-y-auto custom-scrollbar">
+                    {DOC_CONFIG.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setSelectedType(c.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold uppercase mb-1 transition-all ${selectedType === c.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:bg-white/5'}`}>
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="flex-grow relative overflow-hidden bg-[#050505] flex items-center justify-center">

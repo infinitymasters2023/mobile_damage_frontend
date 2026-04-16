@@ -27,7 +27,7 @@ export default function LoginComponent() {
       router.push("/signup");
     } else if (storedUser.name === form.name && storedUser.password === form.password) {
       alert("ACCESS GRANTED 🚀");
-      router.push("/mobile_damage");
+      router.push("/Banking");
     } else {
       alert("INVALID CREDENTIALS");
       setLoading(false);

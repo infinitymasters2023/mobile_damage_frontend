@@ -23,15 +23,13 @@ interface SidebarLinkProps extends NavItem {
 }
 
 const navItems: NavItem[] = [
-   { icon: <Smartphone size={20} />, label: "Mobile Damage", href: "/mobile_damage" },
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
    { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
    { icon: <ShoppingBag size={20} />, label: "Repair Estimate", href: "/repairEstimate" }, 
-   { icon: <Barcode size={20} />, label: "Barcode Read", href: "/Barcode_Read" },  
    { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
    { icon: <UserCheck size={20} />, label: "KYC", href: "/kyc" },
-   { icon: <ShieldCheck size={20} />, label: "Certificate Of Insurance", href: "/coi" },
-   { icon: <Factory size={20} />, label: "Reliance", href: "/reliance" },
+   { icon: <ShieldCheck size={20} />, label: "OCR to Text", href: "/OCR_to_text" },
+
 ];
 
 export default function Sidebar() {
