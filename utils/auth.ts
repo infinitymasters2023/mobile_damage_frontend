@@ -1,21 +1,20 @@
+// utils/auth.ts
+
+// 1. You must export the interface so other files can see it
 export interface User {
-  name?: string;
+  name: string;
   email: string;
-  password?: string;
+  password?: string; // Optional if not always required
 }
 
-// Writes user data to browser storage
-export const saveUser = (userData: User): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("user_node_data", JSON.stringify(userData));
-  }
+export const getUser = (): User | null => {
+  if (typeof window === "undefined") return null;
+  const data = localStorage.getItem("user");
+  return data ? JSON.parse(data) : null;
 };
 
-// Reads user data from browser storage
-export const getUser = (): User | null => {
+export const saveUser = (user: User) => {
   if (typeof window !== "undefined") {
-    const data = localStorage.getItem("user_node_data");
-    return data ? (JSON.parse(data) as User) : null;
+    localStorage.setItem("user", JSON.stringify(user));
   }
-  return null;
 };

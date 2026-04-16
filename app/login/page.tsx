@@ -1,34 +1,134 @@
 "use client";
 
-import LoginComponent from "@/components/login/LoginComponent";
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { getUser } from "@/utils/auth"; // Using alias to avoid path errors
+import { signIn } from "next-auth/react";
 
-export default function LoginPage() {
+export default function LoginComponent() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [form, setForm] = useState({ name: "", password: "" });
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1000));
+
+    const storedUser = getUser();
+
+    if (!storedUser) {
+      alert("NO ACCOUNT DETECTED");
+      router.push("/signup");
+    } else if (storedUser.name === form.name && storedUser.password === form.password) {
+      alert("ACCESS GRANTED 🚀");
+      router.push("/mobile_damage");
+    } else {
+      alert("INVALID CREDENTIALS");
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#020202] flex flex-col items-center justify-center relative overflow-hidden text-slate-300 font-sans w-full">
-      
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px]" />
-      </div>
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-[450px] p-8 bg-[#0a0a0a]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_40px_-10px_rgba(0,102,255,0.3)] relative overflow-hidden"
+      >
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-[#0066FF] shadow-[0_0_15px_#0066FF]" />
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" />
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-white mb-4">
+            <Image src="/img/infyeazy_logo.svg" alt="logo" width={120} height={40} priority />
+          </div>
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">Enterprise Document Intelligence</p>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="z-10 w-full flex flex-col items-center"
-        >
-          {/* Logo Section */}
-          <div className="text-center mb-8">
-         
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="relative group">
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
+            <input
+              type="text"
+              placeholder="USERNAME_ID"
+              required
+              className="w-full pl-12 pr-4 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
           </div>
 
-          <LoginComponent />
-        </motion.div>
-      </div>
+          <div className="relative group">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
+            <input
+              type={show ? "text" : "password"}
+              placeholder="PASSWORD"
+              required
+              className="w-full pl-12 pr-12 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white"
+            >
+              {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          {/* FORGOT PASSWORD OPTION */}
+          <div className="flex justify-end px-2">
+            <Link
+              href="/forgot-password"
+              className="text-[10px] font-bold text-slate-500 hover:text-[#0066FF] transition-colors uppercase tracking-widest"
+            >
+              Forgot Master password?
+            </Link>
+          </div>
+
+          <button
+            disabled={loading}
+            className="w-full py-4 bg-[#0066FF] hover:bg-[#0052cc] text-white rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
+          >
+            {loading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> VERIFYING...
+              </>
+            ) : (
+              "Log in"
+            )}
+          </button>
+        </form>
+
+        {/* GOOGLE AUTH OPTION */}
+        <div className="relative my-6 flex items-center gap-3">
+          <div className="h-[1px] flex-1 bg-white/10" />
+          <span className="text-[9px] text-slate-600 font-bold uppercase tracking-widest">OR</span>
+          <div className="h-[1px] flex-1 bg-white/10" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/mobile_damage" })}
+          className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3"
+        >
+          <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width={16} height={16} />
+          Sign in with Google
+        </button>
+
+        <p className="mt-8 text-center text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+          New Node?{" "}
+          <Link href="/signup" className="text-[#0066FF] ml-1 underline underline-offset-4">
+            SIGN UP
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 }

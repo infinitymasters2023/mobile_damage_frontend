@@ -1,4 +1,3 @@
-// app/signup/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,8 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { User, Mail, ShieldCheck, Loader2, Eye, EyeOff } from "lucide-react";
-import { saveUser, User as UserType } from "../../utils/auth";
+import { saveUser, User as UserType } from "@/utils/auth";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 
 export default function SignupComponent() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function SignupComponent() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }}
-        className="w-[450px]  p-8 bg-[#0a0a0a]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_40px_-10px_rgba(0,102,255,0.3)] relative overflow-hidden"
+        className="w-[450px] p-8 bg-[#0a0a0a]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_40px_-10px_rgba(0,102,255,0.3)] relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-[2px] bg-[#0066FF] shadow-[0_0_15px_#0066FF]" />
         
@@ -76,6 +76,20 @@ export default function SignupComponent() {
             {loading ? <><Loader2 size={16} className="animate-spin" /> INITIALIZING...</> : "REGISTER IDENTITY"}
           </button>
         </form>
+
+        <div className="relative my-6 flex items-center gap-4">
+            <div className="h-[1px] flex-1 bg-white/10"></div>
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">OR</span>
+            <div className="h-[1px] flex-1 bg-white/10"></div>
+        </div>
+
+        <button 
+            onClick={() => signIn("google", { callbackUrl: "/mobile_damage" })}
+            className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3"
+        >
+              <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width={16} height={16} />
+            Sign up with Google
+        </button>
 
         <p className="mt-8 text-center text-[10px] font-bold text-slate-600 uppercase tracking-widest">
           Sync existing? <Link href="/login" className="text-[#0066FF] ml-1 underline underline-offset-4">LOGIN</Link>
