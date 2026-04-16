@@ -45,7 +45,7 @@ export default function SignupComponent() {
           <div className="relative group">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
             <input 
-              type="text" placeholder="USER_ALIAS" required
+              type="text" placeholder="Username" required
               className="w-full pl-12 pr-4 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
@@ -54,7 +54,7 @@ export default function SignupComponent() {
           <div className="relative group">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
             <input 
-              type="email" placeholder="EMAIL_ADDR" required
+              type="email" placeholder="Email Adress" required
               className="w-full pl-12 pr-4 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
@@ -63,7 +63,7 @@ export default function SignupComponent() {
           <div className="relative group">
             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
             <input 
-              type={showPassword ? "text" : "password"} placeholder="MASTER_KEY" required
+              type={showPassword ? "text" : "password"} placeholder="Password" required
               className="w-full pl-12 pr-12 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />

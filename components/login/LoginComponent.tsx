@@ -64,7 +64,7 @@ export default function LoginComponent() {
           <div className="relative group">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
             <input
-              type={show ? "text" : "password"} placeholder="PASSWORD" required
+              type={show ? "text" : "password"} placeholder="Password" required
               className="w-full pl-12 pr-12 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
