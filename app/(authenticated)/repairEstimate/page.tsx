@@ -34,7 +34,7 @@ const DOC_CONFIG = [
   { id: "Lava", label: "Read Lava Repair Invoice", endpoint: "/upload/repairEstimate" },
 ];
 
-const API_BASE = "https://infyverifyapi.infyshield.com";
+const API_BASE = "http://localhost:5084";
 
 export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
@@ -318,6 +318,17 @@ export default function EnterpriseOCR() {
                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">
                   <Terminal size={14} className="text-emerald-500" /> Decoded_Metadata
                 </span>
+                {activeTask?.status === "success" && (
+                  <button
+                    onClick={() => {
+                      setTasks([]);
+                      setActiveId(null);
+                    }}
+                    className="flex items-center gap-2 px-4 py-1.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 hover:text-white transition-all animate-in fade-in slide-in-from-right-2"
+                  >
+                    <UploadCloud size={12} /> Upload New
+                  </button>
+                )}
               </div>
               <div className="flex-grow p-6 font-mono text-emerald-400/80 text-[11px] overflow-y-auto custom-scrollbar leading-relaxed">
                 {activeTask?.status === 'success' ? (

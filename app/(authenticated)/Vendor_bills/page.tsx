@@ -21,26 +21,34 @@ interface Task {
 }
 
 const DOC_CONFIG = [
-  { id: "Oppo", label: "Read Oppo Invoice", endpoint: "/upload/invoice" },
-  { id: "Vivo", label: "Read Vivo Invoice", endpoint: "/upload/invoice" },
-  { id: "Samsung", label: "Read Samsung Invoice", endpoint: "/upload/invoice" },
-  { id: "Motorola", label: "Read Motorola Invoice", endpoint: "/upload/invoice" },
-  { id: "Apple", label: "Read Apple Invoice", endpoint: "/upload/invoice" },
-  { id: "Xiaomi", label: "Read Xiaomi Invoice", endpoint: "/upload/invoice" },
-  { id: "Lg", label: "Read Lg Invoice", endpoint: "/upload/invoice" },
-  { id: "Panasonic", label: "Read Panasonic Invoice", endpoint: "/upload/invoice" },
-  { id: "Purchase", label: "Read Purchase Bill", endpoint: "/upload/invoice" },
-  { id: "Sony", label: "Read Sony Invoice", endpoint: "/upload/invoice" },
-  { id: "Lava", label: "Read Lava Invoice", endpoint: "/upload/invoice" },
+  { id: "BlueDart", label: "Blue Dart Bill", endpoint: "/vendor-bill/blue-dart" },
+  { id: "CheapTicket", label: "Cheap Ticket Bill", endpoint: "/vendor-bill/cheap-ticket" },
+  { id: "Google", label: "Google Invoice Bill", endpoint: "/vendor-bill/google-invoice" },
+  { id: "Microsoft", label: "Microsoft Invoice Bill", endpoint: "/vendor-bill/microsoft" },
+  { id: "Netncr", label: "Netncr Invoice Bill", endpoint: "/vendor-bill/netncr" },
+  { id: "Ola", label: "Ola Invoice Bill", endpoint: "/vendor-bill/ola" },
+  { id: "Rapido", label: "Rapido Invoice Bill", endpoint: "/vendor-bill/rapido" },
+  { id: "Rapyder", label: "Rapyder Invoice Bill", endpoint: "/vendor-bill/rapyder" },
+  { id: "SmartPing", label: "Smart Ping Invoice Bill", endpoint: "/vendor-bill/smart-ping" },
+  { id: "Wemonde", label: "Wemonde Invoice Bill", endpoint: "/vendor-bill/wemonde" },
+  { id: "Airtel", label: "Airtel Invoice Bill", endpoint: "/vendor-bill/airtel" },
+  { id: "Adobe", label: "Adobe Invoice Bill", endpoint: "/vendor-bill/adobe" },
+  { id: "AWS", label: "Aws Invoice Bill", endpoint: "/vendor-bill/aws" },
+  { id: "UdyogTax", label: "Read Udyog Tax Invoice Bill", endpoint: "/vendor-bill/udyog-tax-invoice" },
+  { id: "UdyogElectricity", label: "Read Udyog Electricity Bill", endpoint: "/vendor-bill/udyog-electricity-bill" },
+  { id: "KheraLabour", label: "Read Khera Labour Invoice Bill", endpoint: "/vendor-bill/khera-labour-invoice" },
+  { id: "HyundaiService", label: "Read Hyundai Service Invoice Bill", endpoint: "/vendor-bill/hyundai-service-invoice" },
+  { id: "Videosdk", label: "Read Videosdk Invoice Bill", endpoint: "/vendor-bill/videosdk" },
 ];
 
-const API_BASE = "https://infyverifyapi.infyshield.com";
+const API_BASE = "http://localhost:5084";
+// const API_BASE = "https://pythonocrapi.infyshield.com/";
 
 export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
   const [tasks, setTasks] = useState<Task[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState("Oppo");
+  const [selectedType, setSelectedType] = useState("BlueDart");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -94,6 +102,7 @@ export default function EnterpriseOCR() {
       const fData = new FormData();
       fData.append("file", task.file);
 
+      // Step 1: Upload to local storage to get a virtual path
       const res = await fetch("/api/upload", {
         method: "POST",
         body: fData,
@@ -119,6 +128,7 @@ export default function EnterpriseOCR() {
 
       const config = DOC_CONFIG.find((c) => c.id === task.protocol);
 
+      // Step 2: Send the virtual path to the OCR API
       const ocrRes = await fetch(
         `${API_BASE}${config?.endpoint ?? ""}`,
         {
@@ -148,7 +158,7 @@ export default function EnterpriseOCR() {
           "OCR Protocol Error"
         );
       }
-      
+
       setTasks((prev) =>
         prev.map((t) =>
           t.id === task.id
@@ -188,7 +198,7 @@ export default function EnterpriseOCR() {
 
       <div className="flex flex-col flex-grow min-w-0">
         <Header
-          title="Invoice"
+          title="Vendor Bills"
           selectedType={selectedType}
           setSelectedType={setSelectedType}
           onUpload={() => fileInputRef.current?.click()}
@@ -219,12 +229,12 @@ export default function EnterpriseOCR() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[9px] font-mono text-slate-400 truncate w-32 uppercase">{task.file.name}</span>
-                    <span className={`text-[10px] font-black ${task.status === 'success' ? 'text-emerald-400' : 'text-blue-500'}`}>
-                      {task.progress}%
+                    <span className={`text-[10px] font-black ${task.status === 'success' ? 'text-emerald-400' : task.status === 'error' ? 'text-red-500' : 'text-blue-500'}`}>
+                      {task.status === 'error' ? 'ERROR' : `${task.progress}%`}
                     </span>
                   </div>
                   <div className="h-1 bg-white/5 rounded-full overflow-hidden mb-2">
-                    <div className={`h-full transition-all duration-500 ${task.status === 'success' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-500'}`} style={{ width: `${task.progress}%` }} />
+                    <div className={`h-full transition-all duration-500 ${task.status === 'success' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : task.status === 'error' ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : 'bg-blue-500'}`} style={{ width: `${task.progress}%` }} />
                   </div>
                   <span className="text-[7px] font-black uppercase text-slate-600 tracking-tighter">Node: {task.protocol}</span>
                 </button>
@@ -242,13 +252,13 @@ export default function EnterpriseOCR() {
             >
               <div className="p-5 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md shrink-0 z-10">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <FileSearch size={14} className="text-blue-500" /> Invoice
+                  <FileSearch size={14} className="text-blue-500" /> Vendor Bills
                 </span>
 
                 <div className="relative group/dropdown">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white/10 transition-all min-w-[150px] justify-between">
                     <span className="text-[9px] font-black text-slate-300 uppercase">
-                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Invoice"}
+                      {DOC_CONFIG.find(c => c.id === selectedType)?.label || "Select Vendor Bill"}
                     </span>
                     <ChevronDown size={12} className="text-slate-500 group-hover/dropdown:rotate-180 transition-transform" />
                   </div>
@@ -318,10 +328,28 @@ export default function EnterpriseOCR() {
                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">
                   <Terminal size={14} className="text-emerald-500" /> Decoded_Metadata
                 </span>
+                {activeTask?.status === "success" && (
+                  <button
+                    onClick={() => {
+                      setTasks([]);
+                      setActiveId(null);
+                    }}
+                    className="flex items-center gap-2 px-4 py-1.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg text-[9px] font-black uppercase hover:bg-blue-600 hover:text-white transition-all animate-in fade-in slide-in-from-right-2"
+                  >
+                    <UploadCloud size={12} /> Upload New
+                  </button>
+                )}
               </div>
               <div className="flex-grow p-6 font-mono text-emerald-400/80 text-[11px] overflow-y-auto custom-scrollbar leading-relaxed">
                 {activeTask?.status === 'success' ? (
                   <pre className="animate-in fade-in duration-500">{JSON.stringify(activeTask.result, null, 2)}</pre>
+                ) : activeTask?.status === 'error' ? (
+                  <div className="h-full flex flex-col justify-center items-center text-red-500 gap-4 opacity-80 p-8 text-center animate-in fade-in">
+                    <p className="uppercase text-[11px] tracking-[0.1em] font-black">Error Processing Document</p>
+                    <pre className="text-[10px] bg-red-500/10 p-4 rounded-xl border border-red-500/20 max-w-full overflow-x-auto text-red-400 whitespace-pre-wrap">
+                      {String(activeTask.result)}
+                    </pre>
+                  </div>
                 ) : (
                   <div className="h-full flex flex-col justify-center items-center opacity-20 gap-4">
                     {activeTask && <Loader2 className="animate-spin text-blue-500" />}

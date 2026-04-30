@@ -26,6 +26,7 @@ const navItems: NavItem[] = [
    { icon: <CreditCard size={20} />, label: "Banking", href: "/Banking" },
    { icon: <FileText size={20} />, label: "Invoices", href: "/invoice" },
    { icon: <ShoppingBag size={20} />, label: "Repair Estimate", href: "/repairEstimate" }, 
+   { icon: <Factory size={20} />, label: "Vendor Bills", href: "/Vendor_bills" },
    { icon: <Languages size={20} />, label: "Audio Translate", href: "/Translate" },
    { icon: <UserCheck size={20} />, label: "KYC", href: "/kyc" },
    { icon: <ShieldCheck size={20} />, label: "OCR to Text", href: "/OCR_to_text" },
