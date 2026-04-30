@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Baaki styles iske niche */
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.header-bg{
+  background: linear-gradient(to bottom,#1b2125,#000000);
+}
+footer{
+background-color: #000;
+border-top: 1px solid #171717;
+  color: white;
+}
+.main-bg {
+  background: linear-gradient(to top, #181818, #000000);
+}
+.main-bg-img{
+  background: url('/grid-top.svg'); /* use root-relative path */
+  width: 100%;
+  height: auto;
+  background-position: center;
+  background-size: cover;
+}
+.navbar-brand > img{
+  background: white;
+  border-radius: 5px;
+  height: 50px;
+  object-fit: contain;
+  padding: 10px;
+}
+.main-content{
+  border-radius: 50px;
+  border: 1px solid #dee2e6;
+}
+
+.logo{
+  height: 35px;
+  width: 100%;
+  object-fit: contain !important;
+}
+
+h4.main-heading {
+  position: relative;
+  display: inline-block;
+  padding: 12px 25px;   /* inner spacing */
+  border-radius: 40px;
+  font-weight: 800;
+  color: white;
+  z-index: 0;
+  background: #000;      /* fallback background inside border */
+  margin-top: 40px;
+}
+
+h4.main-heading::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px; bottom: -2px; right: -2px;
+  z-index: -9;
+  border-radius: 42px;
+  background: linear-gradient(140deg, #d2a8ff 12%, #f778ba 42%, #ff7b72 85%);
+}
+
+.font-size-h1{
+  font-size: 1.9rem;
+}
+
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+/* Change the white/blue background to match your bg-black/40 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white; /* Keeps text white */
+  -webkit-box-shadow: 0 0 0px 1000px #0a0a0a inset; /* Fills background with your dark color */
+  transition: background-color 5000s ease-in-out 0s;
+  background-clip: content-box !important;
+}
+
+/* Optional: Keep the backdrop blur effect visible */
+input:-internal-autofill-selected {
+  background-color: transparent !important;
 }

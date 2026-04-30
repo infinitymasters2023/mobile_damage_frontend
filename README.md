@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Project Rules
+
+- App Router only
+- No logic inside page.tsx
+- Feature-based components
+- Tailwind CSS only
+- One component per file
+
 ## Getting Started
 
 First, run the development server:
