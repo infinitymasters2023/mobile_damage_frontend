@@ -26,7 +26,7 @@ const DOC_CONFIG = [
   { id: "Bank Id Ocr", label: "Ocr to Bank Id ", endpoint: "/upload/Banking" },
 ];
 
-const API_BASE = "https://infyverifyapi.infyshield.com";
+const API_BASE = "https://pythonocrapi.infyshield.com/";
 
 export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
@@ -140,7 +140,7 @@ export default function EnterpriseOCR() {
           "OCR Protocol Error"
         );
       }
-      
+
       setTasks((prev) =>
         prev.map((t) =>
           t.id === task.id
