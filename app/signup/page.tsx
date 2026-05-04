@@ -18,22 +18,22 @@ export default function SignupComponent() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200)); 
-    
+    await new Promise(r => setTimeout(r, 1200));
+
     saveUser(form);
     alert("REGISTRATION SUCCESSFUL");
-    router.push("/login"); 
+    router.push("/login");
   };
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }} 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-[450px] p-8 bg-[#0a0a0a]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_0_40px_-10px_rgba(0,102,255,0.3)] relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-[2px] bg-[#0066FF] shadow-[0_0_15px_#0066FF]" />
-        
+
         <div className="flex flex-col items-center text-center mb-8">
           <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-white mb-4">
             <Image src="/img/infyeazy_logo.svg" alt="logo" width={120} height={40} priority />
@@ -44,7 +44,7 @@ export default function SignupComponent() {
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="relative group">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
-            <input 
+            <input
               type="text" placeholder="Username" required
               className="w-full pl-12 pr-4 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -53,7 +53,7 @@ export default function SignupComponent() {
 
           <div className="relative group">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
-            <input 
+            <input
               type="email" placeholder="Email Adress" required
               className="w-full pl-12 pr-4 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -62,7 +62,7 @@ export default function SignupComponent() {
 
           <div className="relative group">
             <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-[#0066FF]" size={18} />
-            <input 
+            <input
               type={showPassword ? "text" : "password"} placeholder="Password" required
               className="w-full pl-12 pr-12 py-4 bg-black border border-white/5 rounded-2xl text-white font-mono text-sm focus:border-[#0066FF]/50 outline-none transition-all"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -78,17 +78,17 @@ export default function SignupComponent() {
         </form>
 
         <div className="relative my-6 flex items-center gap-4">
-            <div className="h-[1px] flex-1 bg-white/10"></div>
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">OR</span>
-            <div className="h-[1px] flex-1 bg-white/10"></div>
+          <div className="h-[1px] flex-1 bg-white/10"></div>
+          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">OR</span>
+          <div className="h-[1px] flex-1 bg-white/10"></div>
         </div>
 
-        <button 
-            onClick={() => signIn("google", { callbackUrl: "/mobile_damage" })}
-            className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3"
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/Banking" })}
+          className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3"
         >
-              <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width={16} height={16} />
-            Sign up with Google
+          <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width={16} height={16} />
+          Sign up with Google
         </button>
 
         <p className="mt-8 text-center text-[10px] font-bold text-slate-600 uppercase tracking-widest">

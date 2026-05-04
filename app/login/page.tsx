@@ -114,7 +114,7 @@ export default function LoginComponent() {
 
         <button
           type="button"
-          onClick={() => signIn("google", { callbackUrl: "/mobile_damage" })}
+          onClick={() => signIn("google", { callbackUrl: "/Banking" })}
           className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3"
         >
           <Image src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width={16} height={16} />

@@ -1,4 +1,7 @@
+"use client";
+
 import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 import Sidebar from "@/components/layout/Sidebar";
 
 export default function RootLayout({
@@ -7,11 +10,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-      <html lang="en">
+    <html lang="en">
       <body>
-        {/* Layout UI */}
-        {/* Place children where you want to render a page or nested layout */}
-        <main>{children}</main>
+        <SessionProvider>
+          {/* Example Layout */}
+          <div style={{ display: "flex" }}>
+            <main style={{ flex: 1 }}>{children}</main>
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );

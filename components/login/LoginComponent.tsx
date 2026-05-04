@@ -27,7 +27,7 @@ export default function LoginComponent() {
       router.push("/signup");
     } else if (storedUser.name === form.name && storedUser.password === form.password) {
       alert("ACCESS GRANTED 🚀");
-      router.push("/mobile_damage");
+      router.push("/Banking");
     } else {
       alert("INVALID CREDENTIALS");
       setLoading(false);
@@ -72,7 +72,7 @@ export default function LoginComponent() {
             <button type="button" onClick={() => setShow(!show)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white">
               {show ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-            
+
           </div>
 
           <div className="flex justify-end px-2">

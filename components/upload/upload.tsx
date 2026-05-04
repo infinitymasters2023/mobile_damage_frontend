@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, SetStateAction } from "react";
 import ImageUploader from "@/components/upload/ImageUploader";
 import ImagePreview from "@/components/upload/ImagePreview";
 import Header from "../layout/Header";
@@ -41,20 +41,22 @@ export default function UploadPage() {
   const toggleSelect = useCallback((image: UploadedImage) => {
     setSelectedImages((prev) => {
       const isAlreadySelected = prev.some((i) => i.url === image.url);
-      return isAlreadySelected 
-        ? prev.filter((i) => i.url !== image.url) 
+      return isAlreadySelected
+        ? prev.filter((i) => i.url !== image.url)
         : [...prev, image];
     });
   }, []);
 
   return (
     <>
-      <Header title="Mobile Damage Analysis" />
+      <Header title="Mobile Damage Analysis" selectedType={""} setSelectedType={function (value: SetStateAction<string>): void {
+        throw new Error("Function not implemented.");
+      }} />
 
       {/* Main Container: Responsive padding aur width limits */}
       <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-[1800px] mx-auto w-full">
         <div className="grid grid-cols-12 gap-6 lg:gap-10">
-          
+
           {/* Section 1: Uploader */}
           <div className="col-span-12 lg:col-span-3 order-1">
             <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-slate-500">Source Input</h3>
@@ -65,7 +67,7 @@ export default function UploadPage() {
           <div className="col-span-12 lg:col-span-6 order-2">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
               <h3 className="font-bold text-xl tracking-tight">Diagnostic Gallery</h3>
-              
+
               {/* Neon Badge with responsive margin */}
               <div className="relative group">
                 <div className="absolute inset-0 bg-blue-500/30 blur-xl rounded-full animate-pulse" />
@@ -74,7 +76,7 @@ export default function UploadPage() {
                 </div>
               </div>
             </div>
-            
+
             <ImagePreview
               files={images}
               selectedImages={selectedImages}
@@ -85,7 +87,7 @@ export default function UploadPage() {
           {/* Section 3: Metadata (Details Panel) */}
           <div className="col-span-12 lg:col-span-3 order-3">
             <h3 className="mb-6 font-bold text-lg text-slate-400 border-b border-white/5 pb-2">Analysis Data</h3>
-            
+
             <div className="space-y-4 max-h-[400px] lg:max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
               {selectedImages.length === 0 ? (
                 <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-[32px] opacity-30 italic text-sm">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { Languages, Copy, CheckSquare, FileAudio, Loader2, Upload, X, ChevronDown } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
@@ -46,7 +46,7 @@ export default function AudioTranslate() {
     setTranscript("");
     setTranslation("");
     setProgress(0);
-    
+
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -58,7 +58,7 @@ export default function AudioTranslate() {
     }, 300);
 
     await new Promise((r) => setTimeout(r, 3500));
-    
+
     setTranscript(`Inference complete for ${fileName}. Audio stream identifies critical hardware failure in the primary circuit.`);
     setTranslation(`Translated Output [${targetLanguage.toUpperCase()}]: Analysis identifies critical hardware failure.`);
     setIsProcessing(false);
@@ -76,17 +76,19 @@ export default function AudioTranslate() {
       <Sidebar />
 
       <div className="flex flex-col flex-grow min-w-0">
-        <Header title="Audio Translate" />
+        <Header title="Audio Translate" selectedType={""} setSelectedType={function (value: SetStateAction<string>): void {
+          throw new Error("Function not implemented.");
+        }} />
 
         <main className="flex-grow flex flex-col lg:flex-row p-3 md:p-4 gap-4 overflow-y-auto lg:overflow-hidden">
-          
+
           {/* LEFT COLUMN: UPLOAD & TRANSCRIPT */}
           <div className="flex-[7] flex flex-col gap-4 min-w-0 lg:h-full">
-            
+
             {/* AUDIO ASSET NODE (Viewfinder equivalent) */}
             <div className="flex-[6] min-h-[350px] lg:min-h-0 rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col overflow-hidden relative shadow-2xl">
               <div className="p-3 border-b border-white/10 px-6 bg-white/[0.02] flex justify-between items-center shrink-0">
-                <span className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2"> 
+                <span className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                   <FileAudio size={14} className="text-blue-500" /> Audio Asset Node
                 </span>
                 <div className="flex gap-2 items-center">
@@ -104,7 +106,7 @@ export default function AudioTranslate() {
                     </div>
                     <h4 className="font-bold text-center truncate w-full px-2 text-base md:text-lg">{file.name}</h4>
                     <p className="text-[10px] text-slate-500 uppercase tracking-[0.2em] mt-2">{file.size} • DETECTED</p>
-                    
+
                     <button onClick={resetEngine} className="mt-8 flex items-center gap-2 text-[10px] font-black text-red-500/60 hover:text-red-400 transition-all uppercase tracking-widest">
                       <X size={14} /> Purge Asset
                     </button>
@@ -152,18 +154,18 @@ export default function AudioTranslate() {
                 <Languages size={14} className="text-blue-500" /> Neural Output
               </span>
               {translation && (
-                 <button onClick={() => {navigator.clipboard.writeText(translation); setCopied(true); setTimeout(()=>setCopied(false), 2000)}} className="text-slate-400 hover:text-white transition-colors p-1">
+                <button onClick={() => { navigator.clipboard.writeText(translation); setCopied(true); setTimeout(() => setCopied(false), 2000) }} className="text-slate-400 hover:text-white transition-colors p-1">
                   {copied ? <CheckSquare size={16} className="text-emerald-500" /> : <Copy size={16} />}
                 </button>
               )}
             </div>
-            
+
             <div className="flex-grow p-6 flex flex-col gap-6 overflow-y-auto scrollbar-hide">
               {/* TARGET LANGUAGE SELECTOR */}
               <div className="space-y-3">
                 <label className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">Target Language</label>
                 <div className="relative group">
-                  <select 
+                  <select
                     value={targetLanguage}
                     onChange={(e) => setTargetLanguage(e.target.value)}
                     className="w-full p-3 rounded-xl bg-white/5 border border-white/10 font-bold text-xs text-white appearance-none cursor-pointer focus:outline-none focus:border-blue-500/50 transition-all hover:bg-white/[0.08]"
@@ -194,25 +196,25 @@ export default function AudioTranslate() {
 
               {/* METRICS & ACTION */}
               <div className="mt-auto space-y-6 shrink-0">
-                 <div className="space-y-3">
-                    <div className="flex justify-between items-end text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                      <span>Inference Confidence</span>
-                      <span className="text-blue-500">{Math.floor(progress)}%</span>
-                    </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-blue-600 transition-all duration-700 ease-out shadow-[0_0_12px_#2563eb]" 
-                        style={{ width: `${progress}%` }} 
-                      />
-                    </div>
-                 </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                    <span>Inference Confidence</span>
+                    <span className="text-blue-500">{Math.floor(progress)}%</span>
+                  </div>
+                  <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-600 transition-all duration-700 ease-out shadow-[0_0_12px_#2563eb]"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
 
-                 <button 
-                  disabled={!translation} 
+                <button
+                  disabled={!translation}
                   className="w-full py-4 bg-white text-black font-black uppercase text-[10px] tracking-[0.25em] rounded-xl hover:bg-slate-200 disabled:opacity-10 transition-all active:scale-95 shadow-xl"
-                 >
-                    Synthesize Result
-                 </button>
+                >
+                  Synthesize Result
+                </button>
               </div>
             </div>
           </aside>

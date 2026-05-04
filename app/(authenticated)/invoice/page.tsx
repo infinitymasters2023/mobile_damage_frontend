@@ -35,9 +35,8 @@ const DOC_CONFIG = [
 ];
 
 
-// const API_BASE = "https://infyverifyapi.infyshield.com";
+const API_BASE = "https://infyverifyapi.infyshield.com";
 
-// const API_BASE = "http://localhost:5084";
 
 
 export default function EnterpriseOCR() {
@@ -152,7 +151,7 @@ export default function EnterpriseOCR() {
           "OCR Protocol Error"
         );
       }
-      
+
       setTasks((prev) =>
         prev.map((t) =>
           t.id === task.id

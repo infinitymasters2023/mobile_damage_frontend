@@ -10,20 +10,17 @@ const handler = NextAuth({
     ],
 
     pages: {
-        signIn: "/login", // your custom login p
+        signIn: "/login",
     },
 
     callbacks: {
-        // ✅ Runs at login
         async signIn({ user, account, profile }) {
             console.log("USER:", user);
             console.log("ACCOUNT:", account);
             console.log("PROFILE:", profile);
-
             return true;
         },
 
-        // ✅ Store extra data in JWT
         async jwt({ token, user }) {
             if (user) {
                 token.name = user.name;
@@ -33,10 +30,9 @@ const handler = NextAuth({
             return token;
         },
 
-        // ✅ Send data to frontend
         async session({ session, token }) {
             if (token) {
-                session.user = session.user || {}; // ✅ ensure object exists
+                session.user = session.user || {};
 
                 session.user.name = token.name as string;
                 session.user.email = token.email as string;
@@ -45,9 +41,20 @@ const handler = NextAuth({
             return session;
         },
 
-        // ✅ Redirect after login
-        async redirect({ baseUrl }) {
-            return `${baseUrl}/Banking`;
+        // ✅ FIXED redirect logic
+        async redirect({ url, baseUrl }) {
+            // allow /login or any relative route
+            if (url.startsWith("/")) {
+                return `${baseUrl}${url}`;
+            }
+
+            // allow full URLs from same origin
+            if (url.startsWith(baseUrl)) {
+                return url;
+            }
+
+            // default fallback
+            return baseUrl;
         },
     },
 });
