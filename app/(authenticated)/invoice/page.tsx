@@ -34,11 +34,11 @@ const DOC_CONFIG = [
   { id: "Lava", label: "Read Lava Invoice", endpoint: "/upload/invoice" },
 ];
 
-<<<<<<< HEAD
-const API_BASE = "https://infyverifyapi.infyshield.com";
-=======
-const API_BASE = "http://localhost:5084";
->>>>>>> 29fe349175c2c775725fb17110c53620a245040e
+
+// const API_BASE = "https://infyverifyapi.infyshield.com";
+
+// const API_BASE = "http://localhost:5084";
+
 
 export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
@@ -322,8 +322,7 @@ export default function EnterpriseOCR() {
                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] flex items-center gap-2">
                   <Terminal size={14} className="text-emerald-500" /> Decoded_Metadata
                 </span>
-<<<<<<< HEAD
-=======
+
                 {activeTask?.status === "success" && (
                   <button
                     onClick={() => {
@@ -335,7 +334,7 @@ export default function EnterpriseOCR() {
                     <UploadCloud size={12} /> Upload New
                   </button>
                 )}
->>>>>>> 29fe349175c2c775725fb17110c53620a245040e
+
               </div>
               <div className="flex-grow p-6 font-mono text-emerald-400/80 text-[11px] overflow-y-auto custom-scrollbar leading-relaxed">
                 {activeTask?.status === 'success' ? (
