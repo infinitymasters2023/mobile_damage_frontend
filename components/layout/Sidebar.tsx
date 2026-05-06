@@ -158,7 +158,7 @@ function SidebarLink({ icon, label, href, active, isCollapsed }: SidebarLinkProp
       href={href} 
       title={isCollapsed ? label : ""}
       className={`flex items-center transition-all duration-200 group relative
-        ${active ? "bg-blue-600/10 text-blue-500 border border-blue-500/20 shadow-[inset_0_0_10px_rgba(37,99,235,0.05)]" : "text-slate-500 hover:text-white hover:bg-white/5 border border-transparent"} 
+        ${active ? "bg-blue-600/10 text-blue-500 border border-blue-500/20 shadow-[inset_0_0_10px_rgba(37,99,235,0.05)]" : "text-white-500 hover:text-slate-500 hover:bg-white/5 border border-transparent"} 
         ${isCollapsed ? "justify-center h-12 w-12 mx-auto rounded-xl" : "px-4 py-3 gap-4 w-full rounded-2xl"}`}
     >
       <span className={`shrink-0 ${active ? "text-blue-500" : "group-hover:text-blue-400"}`}>{icon}</span>

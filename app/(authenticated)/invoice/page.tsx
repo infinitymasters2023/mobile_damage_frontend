@@ -35,7 +35,7 @@ const DOC_CONFIG = [
 ];
 
 
-const API_BASE = "https://infyverifyapi.infyshield.com";
+const API_BASE = "http://192.168.1.12:5084";
 
 
 

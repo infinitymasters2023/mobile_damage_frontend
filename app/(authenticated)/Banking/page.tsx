@@ -26,7 +26,7 @@ const DOC_CONFIG = [
   { id: "Bank Id Ocr", label: "Ocr to Bank Id ", endpoint: "/upload/Banking" },
 ];
 
-const API_BASE = "https://pythonocrapi.infyshield.com/";
+const API_BASE = "http://192.168.1.12:5084";
 
 export default function EnterpriseOCR() {
   // Use Task[] instead of any[]
