@@ -76,9 +76,12 @@ export default function AudioTranslate() {
       <Sidebar />
 
       <div className="flex flex-col flex-grow min-w-0">
-        <Header title="Audio Translate" selectedType={""} setSelectedType={function (value: SetStateAction<string>): void {
-          throw new Error("Function not implemented.");
-        }} />
+        <Header title="Audio Translate" 
+        // selectedType={""}
+        //  setSelectedType={function (value: SetStateAction<string>): void {
+        //   throw new Error("Function not implemented.");
+        // }} 
+        />
 
         <main className="flex-grow flex flex-col lg:flex-row p-3 md:p-4 gap-4 overflow-y-auto lg:overflow-hidden">
 
