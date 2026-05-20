@@ -181,9 +181,9 @@ export default function EnterpriseOCR() {
       <div className="flex flex-col flex-grow min-w-0">
         <Header
           title="Banking"
-          selectedType={selectedType}
-          setSelectedType={setSelectedType}
-          onUpload={() => fileInputRef.current?.click()}
+          // selectedType={selectedType}
+          // setSelectedType={setSelectedType}
+          // onUpload={() => fileInputRef.current?.click()}
         />
 
         <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleUpload} />

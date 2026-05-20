@@ -49,9 +49,12 @@ export default function UploadPage() {
 
   return (
     <>
-      <Header title="Mobile Damage Analysis" selectedType={""} setSelectedType={function (value: SetStateAction<string>): void {
-        throw new Error("Function not implemented.");
-      }} />
+      <Header title="Mobile Damage Analysis" 
+      // selectedType={""} 
+      // setSelectedType={function (value: SetStateAction<string>): void {
+      //   throw new Error("Function not implemented.");
+      // }} 
+      />
 
       {/* Main Container: Responsive padding aur width limits */}
       <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-[1800px] mx-auto w-full">
